@@ -485,6 +485,10 @@ set(
     storage/index/adaptive_radix_tree/adaptive_radix_tree_index.hpp
     storage/index/adaptive_radix_tree/adaptive_radix_tree_nodes.cpp
     storage/index/adaptive_radix_tree/adaptive_radix_tree_nodes.hpp
+    storage/index/b_tree/b_tree_index.cpp
+    storage/index/b_tree/b_tree_index.hpp
+    storage/index/b_tree/b_tree_nodes.cpp
+    storage/index/b_tree/b_tree_nodes.hpp
     storage/index/group_key/composite_group_key_index.cpp
     storage/index/group_key/composite_group_key_index.hpp
     storage/index/group_key/group_key_index.cpp
