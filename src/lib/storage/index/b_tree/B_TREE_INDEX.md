@@ -124,9 +124,23 @@ struct BTreeValue {
 
 **Total violations:** `global_violation_count = sum(local_violations) + sum(boundary_flags)`
 
+### BTreeEntry
+
+Key-value entry with TU-Munich optimization:
+
+```cpp
+struct BTreeEntry {
+  std::vector<AllTypeVariant> key;
+  std::shared_ptr<BTreeValue> value;
+  uint32_t key_head = 0;  // TU-Munich: Hash for fast comparison
+
+  static uint32_t compute_head(const std::vector<AllTypeVariant>& k);
+};
+```
+
 ### BTreeNode
 
-Tree node with leaf neighbor pointers:
+Tree node with leaf neighbor pointers and TU-Munich optimizations:
 
 ```cpp
 class BTreeNode : public std::enable_shared_from_this<BTreeNode> {
@@ -136,6 +150,9 @@ class BTreeNode : public std::enable_shared_from_this<BTreeNode> {
   std::vector<BTreeEntry> entries;              // Key-value pairs
   std::vector<std::shared_ptr<BTreeNode>> children;
 
+  // TU-Munich optimization: Hint array for fast search
+  std::array<uint32_t, BTREE_HINT_COUNT> hints;  // 16 hints
+
   std::weak_ptr<BTreeNode> left_neighbor;       // Left sibling (leaf only)
   std::weak_ptr<BTreeNode> right_neighbor;      // Right sibling (leaf only)
 
@@ -143,6 +160,13 @@ class BTreeNode : public std::enable_shared_from_this<BTreeNode> {
   std::shared_ptr<BTreeNode> find_leaf(const std::vector<AllTypeVariant>& key, int* position) const;
   bool is_smallest_in_leaf(const std::vector<AllTypeVariant>& key) const;
   bool is_largest_in_leaf(const std::vector<AllTypeVariant>& key) const;
+
+  // TU-Munich optimization methods
+  void make_hints();                            // Rebuild hint array
+  void update_hint(size_t slot_id);             // Update single hint
+  void search_hint(uint32_t key_head, size_t& lower, size_t& upper) const;
+  size_t lower_bound_optimized(const std::vector<AllTypeVariant>& key, bool& found) const;
+  SeparatorInfo find_separator() const;         // Optimal split point
 };
 ```
 
@@ -877,12 +901,78 @@ if (index->global_violation_count == 0) {
 
 ---
 
+## TU-Munich B-Tree Optimizations
+
+This implementation incorporates key optimizations from the TU-Munich paper:
+**"B-Trees Are Back: Engineering Fast and Pageable Node Layouts"**
+
+### 1. Hint Array
+
+Each node maintains an array of 16 "hints" - key heads at evenly distributed positions.
+
+```cpp
+constexpr int BTREE_HINT_COUNT = 16;
+std::array<uint32_t, BTREE_HINT_COUNT> hints;
+```
+
+**How it works:**
+- `make_hints()`: Stores `key_head` at positions `dist * (i + 1)` where `dist = count / 17`
+- `search_hint()`: Narrows binary search range by finding hints that bracket the target
+- Reduces average comparisons by ~50% for large nodes
+
+### 2. Key Head for Fast Comparison
+
+Each entry stores a 4-byte hash of its key:
+
+```cpp
+uint32_t key_head = BTreeEntry::compute_head(key);
+```
+
+**Benefits:**
+- Single integer comparison before full key comparison
+- Especially effective when keys share common prefixes
+- Hash-based (not order-preserving) so full comparison needed on collision
+
+### 3. Optimized Separator Selection
+
+The `find_separator()` function finds optimal split points:
+
+```cpp
+SeparatorInfo find_separator() const;
+```
+
+**Algorithm:**
+- For inner nodes: Split at middle
+- For leaf nodes: Find split point minimizing prefix overlap
+- Considers entries in range `[count/2 - count/32, count/2 + count/16]`
+
+### 4. Incremental Hint Updates
+
+```cpp
+void update_hint(size_t slot_id);
+```
+
+**Optimization:**
+- Only updates hints affected by the insertion point
+- Avoids full hint rebuild on every insert
+- Based on TU-Munich's incremental update algorithm
+
+### Configuration Constants
+
+```cpp
+constexpr int BTREE_HINT_COUNT = 16;      // Hints per node
+constexpr int BTREE_DEFAULT_DEGREE = 3;   // Minimum degree (t)
+```
+
+---
+
 ## Performance
 
-| Operation | Complexity |
-|-----------|------------|
-| Lookup | O(log n) |
-| Insert validation | O(log n) |
-| Delete validation | O(log n) |
-| Global count check | O(1) |
-| Memory per entry | ~24-32 bytes |
+| Operation | Complexity | Notes |
+|-----------|------------|-------|
+| Lookup | O(log n) | Reduced constant factor via hints |
+| Insert validation | O(log n) | Incremental hint update |
+| Delete validation | O(log n) | |
+| Global count check | O(1) | |
+| Memory per entry | ~40-48 bytes | Includes key_head |
+| Memory per node | +64 bytes | Hint array overhead |

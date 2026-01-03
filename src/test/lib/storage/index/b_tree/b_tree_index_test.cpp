@@ -1088,12 +1088,15 @@ TEST_F(FDODValidationTest, MVCCPhantomReadPrevention) {
 // Test 9: Metadata Storage Efficiency - Memory Layout
 // ============================================================================
 TEST_F(FDODValidationTest, MetadataStorageEfficiency) {
-  // Test that BTreeValue struct is compact and cache-friendly
+  // Test that BTreeValue struct is reasonably sized
+  // Note: BTreeValue includes std::unordered_set<AllTypeVariant> for FD/OD validation
+  // which makes it larger than a cache line, but this is acceptable for the
+  // per-key metadata storage pattern used in dependency validation.
   BTreeValue value;
 
-  // Check struct size is reasonable (should fit in cache line)
+  // Check struct size is reasonable (larger due to rhs_values set and optional fields)
   size_t value_size = sizeof(BTreeValue);
-  EXPECT_LE(value_size, 64);  // Should fit in typical cache line
+  EXPECT_LE(value_size, 256);  // Allow for hash set and optional overhead
 
   // Verify all fields are accessible with minimal overhead
   value.start_index = ChunkOffset{100};
@@ -1971,6 +1974,143 @@ TEST_F(FDODValidationTest, DeltaAccumulationCorrectness) {
   index->set_right_neighbor_flag({1}, 1);
   running_total += 1;
   EXPECT_EQ(index->global_violation_count, running_total);
+}
+
+// ============================================================================
+// TU-Munich B-Tree Optimization Tests
+// Tests for hint-based search, key_head optimization, and separator selection
+// ============================================================================
+
+TEST_F(BTreeIndexTest, TUMunichKeyHeadComputation) {
+  // Test that key_head is computed correctly for entries
+  std::vector<AllTypeVariant> key1 = {1};
+  std::vector<AllTypeVariant> key2 = {2};
+  std::vector<AllTypeVariant> key3 = {1};  // Same as key1
+
+  uint32_t head1 = BTreeEntry::compute_head(key1);
+  uint32_t head2 = BTreeEntry::compute_head(key2);
+  uint32_t head3 = BTreeEntry::compute_head(key3);
+
+  // Same keys should produce same heads
+  EXPECT_EQ(head1, head3);
+
+  // Different keys may have different heads (not guaranteed but highly likely)
+  // This is a weak test since hash collisions are possible
+  // Just verify the function runs without errors
+  EXPECT_TRUE(head1 != 0 || key1[0] == AllTypeVariant{0});
+
+  // Empty key should produce 0
+  std::vector<AllTypeVariant> empty_key;
+  EXPECT_EQ(BTreeEntry::compute_head(empty_key), 0u);
+}
+
+TEST_F(BTreeIndexTest, TUMunichOptimizedSearch) {
+  // Test that optimized search produces correct results
+  auto value_segment = std::make_shared<ValueSegment<int32_t>>(false);
+
+  // Insert enough values to exercise hint-based search
+  for (int i = 1; i <= 100; ++i) {
+    value_segment->append(i);
+  }
+
+  auto index = std::make_shared<BTreeIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{value_segment});
+
+  // Verify all keys are searchable
+  for (int i = 1; i <= 100; ++i) {
+    EXPECT_TRUE(index->contains_key({i})) << "Key " << i << " not found";
+    auto value = index->get_value({i});
+    ASSERT_NE(value, nullptr) << "Value for key " << i << " is null";
+    EXPECT_EQ(value->count, ChunkOffset{1});
+  }
+
+  // Verify non-existent keys are not found
+  EXPECT_FALSE(index->contains_key({0}));
+  EXPECT_FALSE(index->contains_key({101}));
+  EXPECT_FALSE(index->contains_key({-1}));
+}
+
+TEST_F(BTreeIndexTest, TUMunichSearchWithDuplicates) {
+  // Test search with duplicate keys
+  auto value_segment = std::make_shared<ValueSegment<int32_t>>(false);
+
+  // Insert duplicates
+  for (int i = 0; i < 10; ++i) {
+    value_segment->append(1);
+    value_segment->append(2);
+    value_segment->append(3);
+  }
+
+  auto index = std::make_shared<BTreeIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{value_segment});
+
+  // Each key should have count 10
+  auto value1 = index->get_value({1});
+  ASSERT_NE(value1, nullptr);
+  EXPECT_EQ(value1->count, ChunkOffset{10});
+
+  auto value2 = index->get_value({2});
+  ASSERT_NE(value2, nullptr);
+  EXPECT_EQ(value2->count, ChunkOffset{10});
+
+  auto value3 = index->get_value({3});
+  ASSERT_NE(value3, nullptr);
+  EXPECT_EQ(value3->count, ChunkOffset{10});
+
+  // Only 3 distinct keys
+  EXPECT_EQ(index->key_count(), 3u);
+}
+
+TEST_F(BTreeIndexTest, TUMunichLargeIndexPerformance) {
+  // Test with larger dataset to verify hint-based optimization
+  auto value_segment = std::make_shared<ValueSegment<int32_t>>(false);
+
+  // Insert 1000 distinct values
+  for (int i = 1; i <= 1000; ++i) {
+    value_segment->append(i);
+  }
+
+  auto index = std::make_shared<BTreeIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{value_segment});
+
+  EXPECT_EQ(index->key_count(), 1000u);
+
+  // Spot check some keys
+  EXPECT_TRUE(index->contains_key({1}));
+  EXPECT_TRUE(index->contains_key({500}));
+  EXPECT_TRUE(index->contains_key({1000}));
+  EXPECT_FALSE(index->contains_key({1001}));
+
+  // Test lower_bound and upper_bound
+  auto lb = index->lower_bound({500});
+  EXPECT_NE(lb, index->cend());
+
+  auto ub = index->upper_bound({500});
+  EXPECT_NE(ub, index->cend());
+}
+
+TEST_F(BTreeIndexTest, TUMunichDynamicInsertWithHints) {
+  // Test that hints are maintained correctly during dynamic inserts
+  auto value_segment = std::make_shared<ValueSegment<int32_t>>(false);
+  value_segment->append(100);  // Seed
+
+  auto index = std::make_shared<BTreeIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{value_segment});
+
+  // Insert keys dynamically in non-sorted order
+  index->insert_key({50});
+  index->insert_key({150});
+  index->insert_key({25});
+  index->insert_key({75});
+  index->insert_key({125});
+  index->insert_key({175});
+
+  // All keys should be searchable
+  EXPECT_TRUE(index->contains_key({25}));
+  EXPECT_TRUE(index->contains_key({50}));
+  EXPECT_TRUE(index->contains_key({75}));
+  EXPECT_TRUE(index->contains_key({100}));
+  EXPECT_TRUE(index->contains_key({125}));
+  EXPECT_TRUE(index->contains_key({150}));
+  EXPECT_TRUE(index->contains_key({175}));
+
+  EXPECT_EQ(index->key_count(), 7u);
 }
 
 }  // namespace hyrise

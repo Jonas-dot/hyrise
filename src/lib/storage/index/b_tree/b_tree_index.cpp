@@ -39,8 +39,8 @@ BTreeIndex::BTreeIndex(const std::vector<std::shared_ptr<const AbstractSegment>>
 
   _chunk_offsets.reserve(chunk_size);
 
-  int t = 3;
-  _root = std::make_shared<BTreeNode>(t, true);
+  // TU-Munich: Use configurable degree constant
+  _root = std::make_shared<BTreeNode>(BTREE_DEFAULT_DEGREE, true);
 
   std::vector<AllTypeVariant> current_key;
   ChunkOffset start_index{0};
@@ -141,6 +141,8 @@ void BTreeIndex::_insert(const std::vector<AllTypeVariant>& key, std::shared_ptr
     }
     s->children[i]->insert_non_full(key, value);
     _root = s;
+    // TU-Munich: Rebuild hints after root change
+    _root->make_hints();
   } else {
     _root->insert_non_full(key, value);
   }

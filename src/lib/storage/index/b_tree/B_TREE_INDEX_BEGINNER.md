@@ -33,6 +33,18 @@ B-Trees keep data sorted, making it efficient to:
 - Leaf nodes store the actual data pointers
 - Leaf nodes are linked left-to-right for neighbor access
 
+### TU-Munich Optimizations (Advanced)
+
+The implementation uses optimizations from the research paper "B-Trees Are Back":
+
+1. **Hint Array**: Each node stores "hints" (key fingerprints) at regular intervals. This helps narrow down the binary search range before comparing full keys.
+
+2. **Key Head**: Each entry stores a 4-byte hash of its key. The search first compares these hashes (fast!) before comparing full keys (slower).
+
+3. **Smart Splitting**: When a node gets too full, the algorithm finds an optimal split point to minimize wasted space.
+
+These optimizations reduce the number of key comparisons needed during search, making lookups faster especially for large datasets.
+
 ### Metadata Per Key
 
 For each unique key value, we track:

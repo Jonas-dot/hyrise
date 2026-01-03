@@ -1,5 +1,8 @@
 #pragma once
 
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
 #include <memory>
 #include <unordered_set>
 #include <vector>
@@ -10,6 +13,13 @@
 namespace hyrise {
 
 class BTreeNode;
+
+/**
+ * Configuration constants for B-Tree optimization.
+ * Inspired by TU-Munich B-Tree paper "B-Trees Are Back: Engineering Fast and Pageable Node Layouts".
+ */
+constexpr int BTREE_HINT_COUNT = 16;     // Number of hint entries for search optimization
+constexpr int BTREE_DEFAULT_DEGREE = 3;  // Default minimum degree (t=3, max keys = 2t-1 = 5)
 
 /**
  * Dependency type for validation.
@@ -82,15 +92,31 @@ struct BTreeValue {
 
 /**
  * Key-value entry stored in B-Tree nodes.
+ * Enhanced with key head for fast comparison (TU-Munich optimization).
  */
 struct BTreeEntry {
   std::vector<AllTypeVariant> key;
   std::shared_ptr<BTreeValue> value;
+  uint32_t key_head = 0;  // First 4 bytes of key hash for fast comparison (TU-Munich head optimization)
+
+  // Compute a simple head from the key for fast comparison
+  static uint32_t compute_head(const std::vector<AllTypeVariant>& k) {
+    if (k.empty())
+      return 0;
+    // Use hash of first key component as head
+    size_t hash = std::hash<AllTypeVariant>{}(k[0]);
+    return static_cast<uint32_t>(hash);
+  }
 };
 
 /**
  * B-Tree node supporting both internal and leaf nodes.
  * Minimum degree t=3 (2t-1=5 max keys per node).
+ *
+ * Enhanced with TU-Munich B-Tree optimizations:
+ * - Hint array: Stores heads of evenly distributed keys for faster binary search
+ * - Key head: First 4 bytes used for quick comparison before full key compare
+ * - Linked leaf nodes for efficient neighbor access during dependency validation
  *
  * Leaf nodes maintain left/right neighbor pointers for efficient
  * neighbor flag updates during dependency validation.
@@ -103,6 +129,10 @@ class BTreeNode : public std::enable_shared_from_this<BTreeNode> {
   std::vector<std::shared_ptr<BTreeNode>> children;
   int t;
   bool leaf;
+
+  // TU-Munich optimization: Hint array for fast binary search narrowing
+  // Stores key_head values at evenly distributed positions
+  std::array<uint32_t, BTREE_HINT_COUNT> hints{};
 
   std::weak_ptr<BTreeNode> left_neighbor;
   std::weak_ptr<BTreeNode> right_neighbor;
@@ -127,6 +157,33 @@ class BTreeNode : public std::enable_shared_from_this<BTreeNode> {
 
   std::shared_ptr<BTreeNode> get_leftmost_leaf();
   std::shared_ptr<BTreeNode> get_rightmost_leaf();
+
+  // TU-Munich optimization: Hint-based search functions
+  /** Rebuild the hint array from current entries (call after structural changes) */
+  void make_hints();
+
+  /** Update hint at a specific slot position (call after single insert) */
+  void update_hint(size_t slot_id);
+
+  /** Use hints to narrow the search range for binary search */
+  void search_hint(uint32_t key_head, size_t& lower_out, size_t& upper_out) const;
+
+  /**
+   * TU-Munich-style lower bound search with hint optimization.
+   * Returns the position where key would be inserted, and sets found_out if exact match.
+   */
+  size_t lower_bound_optimized(const std::vector<AllTypeVariant>& key, bool& found_out) const;
+
+  /** Find separator info for node split (TU-Munich algorithm) */
+  struct SeparatorInfo {
+    size_t slot;        // Slot index at which to split
+    bool is_truncated;  // Whether separator was truncated for space efficiency
+  };
+
+  SeparatorInfo find_separator() const;
+
+  /** Compute common prefix length between two entries */
+  size_t common_prefix(size_t slot_a, size_t slot_b) const;
 };
 
 }  // namespace hyrise

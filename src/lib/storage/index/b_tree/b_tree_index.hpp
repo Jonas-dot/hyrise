@@ -21,6 +21,11 @@ class BTreeIndexTest;
  * - A global violation counter provides O(1) dependency status checks
  * - Leaf nodes are linked for efficient neighbor access during flag updates
  *
+ * Enhanced with TU-Munich B-Tree optimizations:
+ * - Hint array for faster binary search (narrows range before full search)
+ * - Key head comparison (compares 4-byte hash before full key)
+ * - Optimized separator selection for splits
+ *
  * The validation algorithm uses delta-based updates: operations return MetadataDeltas indicating
  * how the global violation count changed, avoiding full rescans.
  *
