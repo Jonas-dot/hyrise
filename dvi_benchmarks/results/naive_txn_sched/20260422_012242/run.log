@@ -1,0 +1,1379 @@
+======================================================================
+  Naive-Sched DVI transaction benchmark (T1-T6)
+  Binary            : /home/Jonas.Baltruschat/hyrise/build_release/hyriseBenchmarkDVIndexNaiveSched
+  Experiment        : all
+  Iterations        : 3
+  Scheduler workers : 0 (0=hardware_concurrency)
+  Output            : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/naive_txn_sched/20260422_012242/
+======================================================================
+  [T1] insert_only_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T1
+  workload:          insert_only
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           0
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 289 ms  (34493 ops/s)
+  batch 2/10 [10000..20000]: 305 ms  (32722 ops/s)
+  batch 3/10 [20000..30000]: 315 ms  (31675 ops/s)
+  batch 4/10 [30000..40000]: 296 ms  (33682 ops/s)
+  batch 5/10 [40000..50000]: 305 ms  (32689 ops/s)
+  batch 6/10 [50000..60000]: 298 ms  (33485 ops/s)
+  batch 7/10 [60000..70000]: 307 ms  (32521 ops/s)
+  batch 8/10 [70000..80000]: 299 ms  (33418 ops/s)
+  batch 9/10 [80000..90000]: 293 ms  (34019 ops/s)
+  batch 10/10 [90000..100000]: 298 ms  (33456 ops/s)
+  total: 3012 ms  (33198 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 325 ms  (30696 ops/s)
+  batch 2/10 [10000..20000]: 306 ms  (32603 ops/s)
+  batch 3/10 [20000..30000]: 308 ms  (32398 ops/s)
+  batch 4/10 [30000..40000]: 314 ms  (31793 ops/s)
+  batch 5/10 [40000..50000]: 307 ms  (32491 ops/s)
+  batch 6/10 [50000..60000]: 301 ms  (33120 ops/s)
+  batch 7/10 [60000..70000]: 305 ms  (32683 ops/s)
+  batch 8/10 [70000..80000]: 306 ms  (32664 ops/s)
+  batch 9/10 [80000..90000]: 309 ms  (32261 ops/s)
+  batch 10/10 [90000..100000]: 298 ms  (33478 ops/s)
+  total: 3086 ms  (32402 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 327 ms  (30529 ops/s)
+  batch 2/10 [10000..20000]: 313 ms  (31902 ops/s)
+  batch 3/10 [20000..30000]: 311 ms  (32096 ops/s)
+  batch 4/10 [30000..40000]: 318 ms  (31413 ops/s)
+  batch 5/10 [40000..50000]: 312 ms  (32028 ops/s)
+  batch 6/10 [50000..60000]: 312 ms  (31950 ops/s)
+  batch 7/10 [60000..70000]: 312 ms  (31982 ops/s)
+  batch 8/10 [70000..80000]: 313 ms  (31853 ops/s)
+  batch 9/10 [80000..90000]: 310 ms  (32204 ops/s)
+  batch 10/10 [90000..100000]: 314 ms  (31765 ops/s)
+  total: 3148 ms  (31765 ops/s)
+  [T1] update_only_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T1
+  workload:          update_only
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 4372 ms  (2287 ops/s)
+  batch 2/10 [10000..20000]: 6559 ms  (1524 ops/s)
+  batch 3/10 [20000..30000]: 5617 ms  (1780 ops/s)
+  batch 4/10 [30000..40000]: 4626 ms  (2161 ops/s)
+  batch 5/10 [40000..50000]: 4873 ms  (2051 ops/s)
+  batch 6/10 [50000..60000]: 5245 ms  (1906 ops/s)
+  batch 7/10 [60000..70000]: 4958 ms  (2016 ops/s)
+  batch 8/10 [70000..80000]: 5225 ms  (1913 ops/s)
+  batch 9/10 [80000..90000]: 5387 ms  (1856 ops/s)
+  batch 10/10 [90000..100000]: 4689 ms  (2132 ops/s)
+  total: 51556 ms  (1939 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 5726 ms  (1746 ops/s)
+  batch 2/10 [10000..20000]: 4458 ms  (2242 ops/s)
+  batch 3/10 [20000..30000]: 6801 ms  (1470 ops/s)
+  batch 4/10 [30000..40000]: 4527 ms  (2208 ops/s)
+  batch 5/10 [40000..50000]: 4580 ms  (2183 ops/s)
+  batch 6/10 [50000..60000]: 4819 ms  (2074 ops/s)
+  batch 7/10 [60000..70000]: 5367 ms  (1863 ops/s)
+  batch 8/10 [70000..80000]: 4746 ms  (2106 ops/s)
+  batch 9/10 [80000..90000]: 5004 ms  (1998 ops/s)
+  batch 10/10 [90000..100000]: 5082 ms  (1967 ops/s)
+  total: 51115 ms  (1956 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 6688 ms  (1495 ops/s)
+  batch 2/10 [10000..20000]: 4663 ms  (2144 ops/s)
+  batch 3/10 [20000..30000]: 4546 ms  (2199 ops/s)
+  batch 4/10 [30000..40000]: 7349 ms  (1360 ops/s)
+  batch 5/10 [40000..50000]: 5037 ms  (1985 ops/s)
+  batch 6/10 [50000..60000]: 5090 ms  (1964 ops/s)
+  batch 7/10 [60000..70000]: 5153 ms  (1940 ops/s)
+  batch 8/10 [70000..80000]: 4940 ms  (2024 ops/s)
+  batch 9/10 [80000..90000]: 5001 ms  (1999 ops/s)
+  batch 10/10 [90000..100000]: 5826 ms  (1716 ops/s)
+  total: 54297 ms  (1841 ops/s)
+  [T1] delete_only_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T1
+  workload:          delete_only
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 6476 ms  (1544 ops/s)
+  batch 2/10 [10000..20000]: 5700 ms  (1754 ops/s)
+  batch 3/10 [20000..30000]: 5742 ms  (1741 ops/s)
+  batch 4/10 [30000..40000]: 7523 ms  (1329 ops/s)
+  batch 5/10 [40000..50000]: 4711 ms  (2122 ops/s)
+  batch 6/10 [50000..60000]: 5234 ms  (1910 ops/s)
+  batch 7/10 [60000..70000]: 5137 ms  (1946 ops/s)
+  batch 8/10 [70000..80000]: 5239 ms  (1908 ops/s)
+  batch 9/10 [80000..90000]: 7233 ms  (1382 ops/s)
+  batch 10/10 [90000..100000]: 4788 ms  (2088 ops/s)
+  total: 57788 ms  (1730 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 4292 ms  (2329 ops/s)
+  batch 2/10 [10000..20000]: 5446 ms  (1836 ops/s)
+  batch 3/10 [20000..30000]: 6843 ms  (1461 ops/s)
+  batch 4/10 [30000..40000]: 7494 ms  (1334 ops/s)
+  batch 5/10 [40000..50000]: 5111 ms  (1956 ops/s)
+  batch 6/10 [50000..60000]: 4990 ms  (2003 ops/s)
+  batch 7/10 [60000..70000]: 5231 ms  (1911 ops/s)
+  batch 8/10 [70000..80000]: 5081 ms  (1968 ops/s)
+  batch 9/10 [80000..90000]: 5600 ms  (1785 ops/s)
+  batch 10/10 [90000..100000]: 5585 ms  (1790 ops/s)
+  total: 55678 ms  (1796 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 6279 ms  (1592 ops/s)
+  batch 2/10 [10000..20000]: 4094 ms  (2442 ops/s)
+  batch 3/10 [20000..30000]: 6602 ms  (1514 ops/s)
+  batch 4/10 [30000..40000]: 7487 ms  (1335 ops/s)
+  batch 5/10 [40000..50000]: 5212 ms  (1918 ops/s)
+  batch 6/10 [50000..60000]: 5243 ms  (1907 ops/s)
+  batch 7/10 [60000..70000]: 5387 ms  (1856 ops/s)
+  batch 8/10 [70000..80000]: 5159 ms  (1938 ops/s)
+  batch 9/10 [80000..90000]: 5065 ms  (1974 ops/s)
+  batch 10/10 [90000..100000]: 5091 ms  (1963 ops/s)
+  total: 55624 ms  (1797 ops/s)
+  [T1] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T1
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1738 ms  (5752 ops/s)
+  batch 2/10 [10000..20000]: 2171 ms  (4605 ops/s)
+  batch 3/10 [20000..30000]: 1743 ms  (5734 ops/s)
+  batch 4/10 [30000..40000]: 2654 ms  (3767 ops/s)
+  batch 5/10 [40000..50000]: 1882 ms  (5312 ops/s)
+  batch 6/10 [50000..60000]: 1891 ms  (5285 ops/s)
+  batch 7/10 [60000..70000]: 1800 ms  (5555 ops/s)
+  batch 8/10 [70000..80000]: 1912 ms  (5228 ops/s)
+  batch 9/10 [80000..90000]: 1727 ms  (5790 ops/s)
+  batch 10/10 [90000..100000]: 1782 ms  (5609 ops/s)
+  total: 19304 ms  (5180 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2460 ms  (4064 ops/s)
+  batch 2/10 [10000..20000]: 1618 ms  (6177 ops/s)
+  batch 3/10 [20000..30000]: 2213 ms  (4517 ops/s)
+  batch 4/10 [30000..40000]: 1791 ms  (5582 ops/s)
+  batch 5/10 [40000..50000]: 1819 ms  (5496 ops/s)
+  batch 6/10 [50000..60000]: 1829 ms  (5466 ops/s)
+  batch 7/10 [60000..70000]: 1741 ms  (5742 ops/s)
+  batch 8/10 [70000..80000]: 1847 ms  (5412 ops/s)
+  batch 9/10 [80000..90000]: 1862 ms  (5368 ops/s)
+  batch 10/10 [90000..100000]: 1869 ms  (5349 ops/s)
+  total: 19053 ms  (5248 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1775 ms  (5633 ops/s)
+  batch 2/10 [10000..20000]: 1701 ms  (5876 ops/s)
+  batch 3/10 [20000..30000]: 2165 ms  (4618 ops/s)
+  batch 4/10 [30000..40000]: 1936 ms  (5164 ops/s)
+  batch 5/10 [40000..50000]: 1766 ms  (5661 ops/s)
+  batch 6/10 [50000..60000]: 1827 ms  (5471 ops/s)
+  batch 7/10 [60000..70000]: 1961 ms  (5097 ops/s)
+  batch 8/10 [70000..80000]: 1770 ms  (5646 ops/s)
+  batch 9/10 [80000..90000]: 1936 ms  (5165 ops/s)
+  batch 10/10 [90000..100000]: 1818 ms  (5500 ops/s)
+  total: 18659 ms  (5359 ops/s)
+  [T2] mixed_off_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T2
+  workload:          mixed
+  mechanism:         off
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1435 ms  (6963 ops/s)
+  batch 2/10 [10000..20000]: 1933 ms  (5172 ops/s)
+  batch 3/10 [20000..30000]: 1890 ms  (5289 ops/s)
+  batch 4/10 [30000..40000]: 1957 ms  (5109 ops/s)
+  batch 5/10 [40000..50000]: 1614 ms  (6194 ops/s)
+  batch 6/10 [50000..60000]: 1590 ms  (6286 ops/s)
+  batch 7/10 [60000..70000]: 1770 ms  (5648 ops/s)
+  batch 8/10 [70000..80000]: 1833 ms  (5455 ops/s)
+  batch 9/10 [80000..90000]: 1701 ms  (5878 ops/s)
+  batch 10/10 [90000..100000]: 1670 ms  (5985 ops/s)
+  total: 17397 ms  (5748 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1801 ms  (5551 ops/s)
+  batch 2/10 [10000..20000]: 1875 ms  (5330 ops/s)
+  batch 3/10 [20000..30000]: 1488 ms  (6718 ops/s)
+  batch 4/10 [30000..40000]: 1672 ms  (5980 ops/s)
+  batch 5/10 [40000..50000]: 1717 ms  (5823 ops/s)
+  batch 6/10 [50000..60000]: 1773 ms  (5637 ops/s)
+  batch 7/10 [60000..70000]: 1698 ms  (5886 ops/s)
+  batch 8/10 [70000..80000]: 1740 ms  (5744 ops/s)
+  batch 9/10 [80000..90000]: 1726 ms  (5792 ops/s)
+  batch 10/10 [90000..100000]: 1844 ms  (5420 ops/s)
+  total: 17339 ms  (5767 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2094 ms  (4774 ops/s)
+  batch 2/10 [10000..20000]: 2187 ms  (4572 ops/s)
+  batch 3/10 [20000..30000]: 2259 ms  (4426 ops/s)
+  batch 4/10 [30000..40000]: 1687 ms  (5926 ops/s)
+  batch 5/10 [40000..50000]: 1678 ms  (5955 ops/s)
+  batch 6/10 [50000..60000]: 1576 ms  (6342 ops/s)
+  batch 7/10 [60000..70000]: 1895 ms  (5276 ops/s)
+  batch 8/10 [70000..80000]: 1792 ms  (5579 ops/s)
+  batch 9/10 [80000..90000]: 1711 ms  (5841 ops/s)
+  batch 10/10 [90000..100000]: 1655 ms  (6038 ops/s)
+  total: 18538 ms  (5394 ops/s)
+  [T2] mixed_fd_single_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T2
+  workload:          mixed
+  mechanism:         fd_single
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1669 ms  (5988 ops/s)
+  batch 2/10 [10000..20000]: 1639 ms  (6098 ops/s)
+  batch 3/10 [20000..30000]: 1564 ms  (6393 ops/s)
+  batch 4/10 [30000..40000]: 1597 ms  (6260 ops/s)
+  batch 5/10 [40000..50000]: 1845 ms  (5417 ops/s)
+  batch 6/10 [50000..60000]: 1646 ms  (6072 ops/s)
+  batch 7/10 [60000..70000]: 1729 ms  (5780 ops/s)
+  batch 8/10 [70000..80000]: 1704 ms  (5868 ops/s)
+  batch 9/10 [80000..90000]: 1734 ms  (5764 ops/s)
+  batch 10/10 [90000..100000]: 1755 ms  (5695 ops/s)
+  total: 16888 ms  (5921 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1604 ms  (6234 ops/s)
+  batch 2/10 [10000..20000]: 1467 ms  (6812 ops/s)
+  batch 3/10 [20000..30000]: 2148 ms  (4653 ops/s)
+  batch 4/10 [30000..40000]: 1729 ms  (5783 ops/s)
+  batch 5/10 [40000..50000]: 1922 ms  (5201 ops/s)
+  batch 6/10 [50000..60000]: 1711 ms  (5843 ops/s)
+  batch 7/10 [60000..70000]: 1748 ms  (5718 ops/s)
+  batch 8/10 [70000..80000]: 1747 ms  (5722 ops/s)
+  batch 9/10 [80000..90000]: 1794 ms  (5574 ops/s)
+  batch 10/10 [90000..100000]: 1744 ms  (5731 ops/s)
+  total: 17618 ms  (5675 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2032 ms  (4919 ops/s)
+  batch 2/10 [10000..20000]: 2288 ms  (4369 ops/s)
+  batch 3/10 [20000..30000]: 2190 ms  (4565 ops/s)
+  batch 4/10 [30000..40000]: 1715 ms  (5827 ops/s)
+  batch 5/10 [40000..50000]: 1754 ms  (5699 ops/s)
+  batch 6/10 [50000..60000]: 1936 ms  (5165 ops/s)
+  batch 7/10 [60000..70000]: 1651 ms  (6054 ops/s)
+  batch 8/10 [70000..80000]: 1732 ms  (5770 ops/s)
+  batch 9/10 [80000..90000]: 1852 ms  (5399 ops/s)
+  batch 10/10 [90000..100000]: 1741 ms  (5741 ops/s)
+  total: 18897 ms  (5291 ops/s)
+  [T2] mixed_fd_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T2
+  workload:          mixed
+  mechanism:         fd_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1629 ms  (6136 ops/s)
+  batch 2/10 [10000..20000]: 2007 ms  (4980 ops/s)
+  batch 3/10 [20000..30000]: 1551 ms  (6445 ops/s)
+  batch 4/10 [30000..40000]: 1890 ms  (5290 ops/s)
+  batch 5/10 [40000..50000]: 1784 ms  (5604 ops/s)
+  batch 6/10 [50000..60000]: 1740 ms  (5745 ops/s)
+  batch 7/10 [60000..70000]: 1846 ms  (5414 ops/s)
+  batch 8/10 [70000..80000]: 1925 ms  (5192 ops/s)
+  batch 9/10 [80000..90000]: 1816 ms  (5505 ops/s)
+  batch 10/10 [90000..100000]: 1783 ms  (5605 ops/s)
+  total: 17976 ms  (5562 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2328 ms  (4294 ops/s)
+  batch 2/10 [10000..20000]: 1723 ms  (5801 ops/s)
+  batch 3/10 [20000..30000]: 2404 ms  (4159 ops/s)
+  batch 4/10 [30000..40000]: 1861 ms  (5372 ops/s)
+  batch 5/10 [40000..50000]: 1750 ms  (5713 ops/s)
+  batch 6/10 [50000..60000]: 1823 ms  (5484 ops/s)
+  batch 7/10 [60000..70000]: 1866 ms  (5356 ops/s)
+  batch 8/10 [70000..80000]: 1781 ms  (5612 ops/s)
+  batch 9/10 [80000..90000]: 1843 ms  (5425 ops/s)
+  batch 10/10 [90000..100000]: 1722 ms  (5805 ops/s)
+  total: 19105 ms  (5234 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2006 ms  (4983 ops/s)
+  batch 2/10 [10000..20000]: 1634 ms  (6118 ops/s)
+  batch 3/10 [20000..30000]: 1657 ms  (6034 ops/s)
+  batch 4/10 [30000..40000]: 1805 ms  (5538 ops/s)
+  batch 5/10 [40000..50000]: 1766 ms  (5661 ops/s)
+  batch 6/10 [50000..60000]: 1802 ms  (5548 ops/s)
+  batch 7/10 [60000..70000]: 1809 ms  (5525 ops/s)
+  batch 8/10 [70000..80000]: 1801 ms  (5550 ops/s)
+  batch 9/10 [80000..90000]: 1746 ms  (5724 ops/s)
+  batch 10/10 [90000..100000]: 1785 ms  (5600 ops/s)
+  total: 17815 ms  (5612 ops/s)
+  [T2] mixed_od_single_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T2
+  workload:          mixed
+  mechanism:         od_single
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1908 ms  (5239 ops/s)
+  batch 2/10 [10000..20000]: 2235 ms  (4473 ops/s)
+  batch 3/10 [20000..30000]: 1556 ms  (6423 ops/s)
+  batch 4/10 [30000..40000]: 1938 ms  (5158 ops/s)
+  batch 5/10 [40000..50000]: 1839 ms  (5434 ops/s)
+  batch 6/10 [50000..60000]: 1833 ms  (5455 ops/s)
+  batch 7/10 [60000..70000]: 1856 ms  (5385 ops/s)
+  batch 8/10 [70000..80000]: 1737 ms  (5755 ops/s)
+  batch 9/10 [80000..90000]: 1745 ms  (5730 ops/s)
+  batch 10/10 [90000..100000]: 1821 ms  (5491 ops/s)
+  total: 18473 ms  (5413 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2319 ms  (4311 ops/s)
+  batch 2/10 [10000..20000]: 2234 ms  (4474 ops/s)
+  batch 3/10 [20000..30000]: 1577 ms  (6339 ops/s)
+  batch 4/10 [30000..40000]: 1708 ms  (5853 ops/s)
+  batch 5/10 [40000..50000]: 1837 ms  (5442 ops/s)
+  batch 6/10 [50000..60000]: 1753 ms  (5703 ops/s)
+  batch 7/10 [60000..70000]: 1886 ms  (5300 ops/s)
+  batch 8/10 [70000..80000]: 1960 ms  (5099 ops/s)
+  batch 9/10 [80000..90000]: 1739 ms  (5750 ops/s)
+  batch 10/10 [90000..100000]: 1772 ms  (5640 ops/s)
+  total: 18790 ms  (5321 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1638 ms  (6101 ops/s)
+  batch 2/10 [10000..20000]: 1599 ms  (6253 ops/s)
+  batch 3/10 [20000..30000]: 1522 ms  (6566 ops/s)
+  batch 4/10 [30000..40000]: 1750 ms  (5712 ops/s)
+  batch 5/10 [40000..50000]: 1825 ms  (5479 ops/s)
+  batch 6/10 [50000..60000]: 1670 ms  (5984 ops/s)
+  batch 7/10 [60000..70000]: 1688 ms  (5922 ops/s)
+  batch 8/10 [70000..80000]: 1745 ms  (5728 ops/s)
+  batch 9/10 [80000..90000]: 1772 ms  (5640 ops/s)
+  batch 10/10 [90000..100000]: 2109 ms  (4740 ops/s)
+  total: 17323 ms  (5772 ops/s)
+  [T2] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T2
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2052 ms  (4873 ops/s)
+  batch 2/10 [10000..20000]: 1715 ms  (5829 ops/s)
+  batch 3/10 [20000..30000]: 1568 ms  (6376 ops/s)
+  batch 4/10 [30000..40000]: 1875 ms  (5330 ops/s)
+  batch 5/10 [40000..50000]: 1807 ms  (5533 ops/s)
+  batch 6/10 [50000..60000]: 1803 ms  (5544 ops/s)
+  batch 7/10 [60000..70000]: 1855 ms  (5389 ops/s)
+  batch 8/10 [70000..80000]: 1847 ms  (5412 ops/s)
+  batch 9/10 [80000..90000]: 1766 ms  (5661 ops/s)
+  batch 10/10 [90000..100000]: 1985 ms  (5036 ops/s)
+  total: 18277 ms  (5471 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1769 ms  (5651 ops/s)
+  batch 2/10 [10000..20000]: 1622 ms  (6162 ops/s)
+  batch 3/10 [20000..30000]: 2118 ms  (4720 ops/s)
+  batch 4/10 [30000..40000]: 1778 ms  (5623 ops/s)
+  batch 5/10 [40000..50000]: 1892 ms  (5285 ops/s)
+  batch 6/10 [50000..60000]: 1764 ms  (5668 ops/s)
+  batch 7/10 [60000..70000]: 1882 ms  (5311 ops/s)
+  batch 8/10 [70000..80000]: 1774 ms  (5635 ops/s)
+  batch 9/10 [80000..90000]: 1791 ms  (5581 ops/s)
+  batch 10/10 [90000..100000]: 1787 ms  (5593 ops/s)
+  total: 18181 ms  (5500 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1746 ms  (5725 ops/s)
+  batch 2/10 [10000..20000]: 1627 ms  (6144 ops/s)
+  batch 3/10 [20000..30000]: 1757 ms  (5690 ops/s)
+  batch 4/10 [30000..40000]: 1881 ms  (5314 ops/s)
+  batch 5/10 [40000..50000]: 1883 ms  (5310 ops/s)
+  batch 6/10 [50000..60000]: 1710 ms  (5847 ops/s)
+  batch 7/10 [60000..70000]: 1838 ms  (5439 ops/s)
+  batch 8/10 [70000..80000]: 1784 ms  (5604 ops/s)
+  batch 9/10 [80000..90000]: 1909 ms  (5235 ops/s)
+  batch 10/10 [90000..100000]: 1837 ms  (5442 ops/s)
+  total: 17976 ms  (5562 ops/s)
+  [T3] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T3
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2297 ms  (4352 ops/s)
+  batch 2/10 [10000..20000]: 1919 ms  (5210 ops/s)
+  batch 3/10 [20000..30000]: 1561 ms  (6405 ops/s)
+  batch 4/10 [30000..40000]: 1696 ms  (5894 ops/s)
+  batch 5/10 [40000..50000]: 1781 ms  (5612 ops/s)
+  batch 6/10 [50000..60000]: 1929 ms  (5182 ops/s)
+  batch 7/10 [60000..70000]: 1821 ms  (5489 ops/s)
+  batch 8/10 [70000..80000]: 1827 ms  (5470 ops/s)
+  batch 9/10 [80000..90000]: 1974 ms  (5063 ops/s)
+  batch 10/10 [90000..100000]: 1751 ms  (5709 ops/s)
+  total: 18562 ms  (5387 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2413 ms  (4142 ops/s)
+  batch 2/10 [10000..20000]: 1731 ms  (5776 ops/s)
+  batch 3/10 [20000..30000]: 1762 ms  (5674 ops/s)
+  batch 4/10 [30000..40000]: 1983 ms  (5041 ops/s)
+  batch 5/10 [40000..50000]: 1722 ms  (5806 ops/s)
+  batch 6/10 [50000..60000]: 1835 ms  (5447 ops/s)
+  batch 7/10 [60000..70000]: 1821 ms  (5491 ops/s)
+  batch 8/10 [70000..80000]: 1986 ms  (5033 ops/s)
+  batch 9/10 [80000..90000]: 1812 ms  (5518 ops/s)
+  batch 10/10 [90000..100000]: 1834 ms  (5451 ops/s)
+  total: 18903 ms  (5290 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2433 ms  (4109 ops/s)
+  batch 2/10 [10000..20000]: 1815 ms  (5509 ops/s)
+  batch 3/10 [20000..30000]: 1750 ms  (5711 ops/s)
+  batch 4/10 [30000..40000]: 1790 ms  (5585 ops/s)
+  batch 5/10 [40000..50000]: 1884 ms  (5306 ops/s)
+  batch 6/10 [50000..60000]: 1664 ms  (6009 ops/s)
+  batch 7/10 [60000..70000]: 1750 ms  (5711 ops/s)
+  batch 8/10 [70000..80000]: 1785 ms  (5599 ops/s)
+  batch 9/10 [80000..90000]: 2045 ms  (4888 ops/s)
+  batch 10/10 [90000..100000]: 1884 ms  (5306 ops/s)
+  total: 18804 ms  (5317 ops/s)
+  [T3] mixed_od_multi_v0.1_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T3
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0.1
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2156 ms  (4636 ops/s)
+  batch 2/10 [10000..20000]: 2102 ms  (4755 ops/s)
+  batch 3/10 [20000..30000]: 1715 ms  (5827 ops/s)
+  batch 4/10 [30000..40000]: 2026 ms  (4935 ops/s)
+  batch 5/10 [40000..50000]: 1716 ms  (5824 ops/s)
+  batch 6/10 [50000..60000]: 2006 ms  (4983 ops/s)
+  batch 7/10 [60000..70000]: 1718 ms  (5819 ops/s)
+  batch 8/10 [70000..80000]: 1818 ms  (5498 ops/s)
+  batch 9/10 [80000..90000]: 1815 ms  (5508 ops/s)
+  batch 10/10 [90000..100000]: 1791 ms  (5580 ops/s)
+  total: 18869 ms  (5299 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2081 ms  (4804 ops/s)
+  batch 2/10 [10000..20000]: 1641 ms  (6091 ops/s)
+  batch 3/10 [20000..30000]: 1746 ms  (5726 ops/s)
+  batch 4/10 [30000..40000]: 2454 ms  (4074 ops/s)
+  batch 5/10 [40000..50000]: 1832 ms  (5456 ops/s)
+  batch 6/10 [50000..60000]: 1888 ms  (5294 ops/s)
+  batch 7/10 [60000..70000]: 1919 ms  (5210 ops/s)
+  batch 8/10 [70000..80000]: 1796 ms  (5567 ops/s)
+  batch 9/10 [80000..90000]: 1826 ms  (5475 ops/s)
+  batch 10/10 [90000..100000]: 1840 ms  (5433 ops/s)
+  total: 19027 ms  (5255 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2451 ms  (4079 ops/s)
+  batch 2/10 [10000..20000]: 1464 ms  (6830 ops/s)
+  batch 3/10 [20000..30000]: 1644 ms  (6081 ops/s)
+  batch 4/10 [30000..40000]: 1858 ms  (5379 ops/s)
+  batch 5/10 [40000..50000]: 1895 ms  (5276 ops/s)
+  batch 6/10 [50000..60000]: 1899 ms  (5265 ops/s)
+  batch 7/10 [60000..70000]: 1831 ms  (5459 ops/s)
+  batch 8/10 [70000..80000]: 1756 ms  (5693 ops/s)
+  batch 9/10 [80000..90000]: 2084 ms  (4796 ops/s)
+  batch 10/10 [90000..100000]: 1946 ms  (5136 ops/s)
+  total: 18832 ms  (5309 ops/s)
+  [T3] mixed_od_multi_v0.2_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T3
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0.2
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2188 ms  (4568 ops/s)
+  batch 2/10 [10000..20000]: 1778 ms  (5621 ops/s)
+  batch 3/10 [20000..30000]: 1718 ms  (5819 ops/s)
+  batch 4/10 [30000..40000]: 1711 ms  (5841 ops/s)
+  batch 5/10 [40000..50000]: 1731 ms  (5774 ops/s)
+  batch 6/10 [50000..60000]: 1823 ms  (5484 ops/s)
+  batch 7/10 [60000..70000]: 1735 ms  (5762 ops/s)
+  batch 8/10 [70000..80000]: 1839 ms  (5437 ops/s)
+  batch 9/10 [80000..90000]: 1837 ms  (5441 ops/s)
+  batch 10/10 [90000..100000]: 1910 ms  (5233 ops/s)
+  total: 18275 ms  (5471 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1593 ms  (6277 ops/s)
+  batch 2/10 [10000..20000]: 2381 ms  (4198 ops/s)
+  batch 3/10 [20000..30000]: 2039 ms  (4903 ops/s)
+  batch 4/10 [30000..40000]: 2026 ms  (4935 ops/s)
+  batch 5/10 [40000..50000]: 1926 ms  (5190 ops/s)
+  batch 6/10 [50000..60000]: 1697 ms  (5889 ops/s)
+  batch 7/10 [60000..70000]: 1774 ms  (5636 ops/s)
+  batch 8/10 [70000..80000]: 1803 ms  (5543 ops/s)
+  batch 9/10 [80000..90000]: 2056 ms  (4862 ops/s)
+  batch 10/10 [90000..100000]: 1855 ms  (5388 ops/s)
+  total: 19155 ms  (5220 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2480 ms  (4031 ops/s)
+  batch 2/10 [10000..20000]: 1709 ms  (5849 ops/s)
+  batch 3/10 [20000..30000]: 2411 ms  (4146 ops/s)
+  batch 4/10 [30000..40000]: 2611 ms  (3829 ops/s)
+  batch 5/10 [40000..50000]: 1896 ms  (5273 ops/s)
+  batch 6/10 [50000..60000]: 1781 ms  (5614 ops/s)
+  batch 7/10 [60000..70000]: 1772 ms  (5640 ops/s)
+  batch 8/10 [70000..80000]: 1739 ms  (5749 ops/s)
+  batch 9/10 [80000..90000]: 2033 ms  (4917 ops/s)
+  batch 10/10 [90000..100000]: 1784 ms  (5602 ops/s)
+  total: 20221 ms  (4945 ops/s)
+  [T3] mixed_od_multi_v1.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T3
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         1
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2399 ms  (4168 ops/s)
+  batch 2/10 [10000..20000]: 1697 ms  (5890 ops/s)
+  batch 3/10 [20000..30000]: 1872 ms  (5339 ops/s)
+  batch 4/10 [30000..40000]: 2421 ms  (4130 ops/s)
+  batch 5/10 [40000..50000]: 1991 ms  (5021 ops/s)
+  batch 6/10 [50000..60000]: 1817 ms  (5503 ops/s)
+  batch 7/10 [60000..70000]: 1890 ms  (5288 ops/s)
+  batch 8/10 [70000..80000]: 1802 ms  (5546 ops/s)
+  batch 9/10 [80000..90000]: 1843 ms  (5424 ops/s)
+  batch 10/10 [90000..100000]: 1745 ms  (5730 ops/s)
+  total: 19481 ms  (5132 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2442 ms  (4094 ops/s)
+  batch 2/10 [10000..20000]: 1922 ms  (5202 ops/s)
+  batch 3/10 [20000..30000]: 2422 ms  (4128 ops/s)
+  batch 4/10 [30000..40000]: 2538 ms  (3939 ops/s)
+  batch 5/10 [40000..50000]: 1843 ms  (5424 ops/s)
+  batch 6/10 [50000..60000]: 1839 ms  (5436 ops/s)
+  batch 7/10 [60000..70000]: 1700 ms  (5880 ops/s)
+  batch 8/10 [70000..80000]: 1866 ms  (5356 ops/s)
+  batch 9/10 [80000..90000]: 1948 ms  (5131 ops/s)
+  batch 10/10 [90000..100000]: 1791 ms  (5580 ops/s)
+  total: 20315 ms  (4922 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1759 ms  (5681 ops/s)
+  batch 2/10 [10000..20000]: 2133 ms  (4687 ops/s)
+  batch 3/10 [20000..30000]: 1986 ms  (5033 ops/s)
+  batch 4/10 [30000..40000]: 1852 ms  (5397 ops/s)
+  batch 5/10 [40000..50000]: 1908 ms  (5238 ops/s)
+  batch 6/10 [50000..60000]: 1713 ms  (5835 ops/s)
+  batch 7/10 [60000..70000]: 2042 ms  (4895 ops/s)
+  batch 8/10 [70000..80000]: 1865 ms  (5359 ops/s)
+  batch 9/10 [80000..90000]: 1931 ms  (5177 ops/s)
+  batch 10/10 [90000..100000]: 1811 ms  (5520 ops/s)
+  total: 19006 ms  (5261 ops/s)
+  [T4] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T4
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1686 ms  (5928 ops/s)
+  batch 2/10 [10000..20000]: 1965 ms  (5088 ops/s)
+  batch 3/10 [20000..30000]: 1725 ms  (5793 ops/s)
+  batch 4/10 [30000..40000]: 1674 ms  (5972 ops/s)
+  batch 5/10 [40000..50000]: 1907 ms  (5242 ops/s)
+  batch 6/10 [50000..60000]: 1726 ms  (5791 ops/s)
+  batch 7/10 [60000..70000]: 1646 ms  (6074 ops/s)
+  batch 8/10 [70000..80000]: 1890 ms  (5288 ops/s)
+  batch 9/10 [80000..90000]: 1872 ms  (5339 ops/s)
+  batch 10/10 [90000..100000]: 1786 ms  (5598 ops/s)
+  total: 17882 ms  (5592 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 2398 ms  (4169 ops/s)
+  batch 2/10 [10000..20000]: 2308 ms  (4331 ops/s)
+  batch 3/10 [20000..30000]: 1632 ms  (6125 ops/s)
+  batch 4/10 [30000..40000]: 1991 ms  (5020 ops/s)
+  batch 5/10 [40000..50000]: 1937 ms  (5161 ops/s)
+  batch 6/10 [50000..60000]: 2038 ms  (4904 ops/s)
+  batch 7/10 [60000..70000]: 1830 ms  (5462 ops/s)
+  batch 8/10 [70000..80000]: 1854 ms  (5391 ops/s)
+  batch 9/10 [80000..90000]: 1885 ms  (5305 ops/s)
+  batch 10/10 [90000..100000]: 1799 ms  (5557 ops/s)
+  total: 19677 ms  (5081 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1763 ms  (5670 ops/s)
+  batch 2/10 [10000..20000]: 2344 ms  (4264 ops/s)
+  batch 3/10 [20000..30000]: 2360 ms  (4237 ops/s)
+  batch 4/10 [30000..40000]: 1773 ms  (5638 ops/s)
+  batch 5/10 [40000..50000]: 1863 ms  (5367 ops/s)
+  batch 6/10 [50000..60000]: 1799 ms  (5558 ops/s)
+  batch 7/10 [60000..70000]: 1784 ms  (5603 ops/s)
+  batch 8/10 [70000..80000]: 1960 ms  (5100 ops/s)
+  batch 9/10 [80000..90000]: 1927 ms  (5188 ops/s)
+  batch 10/10 [90000..100000]: 1719 ms  (5816 ops/s)
+  total: 19296 ms  (5182 ops/s)
+  [T4] mixed_od_multi_v0.0_d0.0_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T4
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0
+  num_unique_lhs:    100000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1759 ms  (5682 ops/s)
+  batch 2/10 [10000..20000]: 1553 ms  (6438 ops/s)
+  batch 3/10 [20000..30000]: 2173 ms  (4600 ops/s)
+  batch 4/10 [30000..40000]: 2692 ms  (3714 ops/s)
+  batch 5/10 [40000..50000]: 1889 ms  (5292 ops/s)
+  batch 6/10 [50000..60000]: 1806 ms  (5534 ops/s)
+  batch 7/10 [60000..70000]: 2238 ms  (4468 ops/s)
+  batch 8/10 [70000..80000]: 1832 ms  (5457 ops/s)
+  batch 9/10 [80000..90000]: 1925 ms  (5194 ops/s)
+  batch 10/10 [90000..100000]: 1869 ms  (5347 ops/s)
+  total: 19740 ms  (5065 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1855 ms  (5389 ops/s)
+  batch 2/10 [10000..20000]: 1736 ms  (5757 ops/s)
+  batch 3/10 [20000..30000]: 1642 ms  (6089 ops/s)
+  batch 4/10 [30000..40000]: 1866 ms  (5357 ops/s)
+  batch 5/10 [40000..50000]: 1787 ms  (5593 ops/s)
+  batch 6/10 [50000..60000]: 1779 ms  (5618 ops/s)
+  batch 7/10 [60000..70000]: 1813 ms  (5515 ops/s)
+  batch 8/10 [70000..80000]: 1850 ms  (5403 ops/s)
+  batch 9/10 [80000..90000]: 1764 ms  (5667 ops/s)
+  batch 10/10 [90000..100000]: 1805 ms  (5537 ops/s)
+  total: 17902 ms  (5585 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2511 ms  (3980 ops/s)
+  batch 2/10 [10000..20000]: 1625 ms  (6151 ops/s)
+  batch 3/10 [20000..30000]: 1654 ms  (6043 ops/s)
+  batch 4/10 [30000..40000]: 1888 ms  (5294 ops/s)
+  batch 5/10 [40000..50000]: 2061 ms  (4851 ops/s)
+  batch 6/10 [50000..60000]: 1793 ms  (5575 ops/s)
+  batch 7/10 [60000..70000]: 1801 ms  (5550 ops/s)
+  batch 8/10 [70000..80000]: 1894 ms  (5278 ops/s)
+  batch 9/10 [80000..90000]: 1763 ms  (5671 ops/s)
+  batch 10/10 [90000..100000]: 1909 ms  (5237 ops/s)
+  total: 18904 ms  (5289 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t1_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           1  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 4981 ms  (2007 ops/s)
+  batch 2/10 [10000..20000]: 4968 ms  (2012 ops/s)
+  batch 3/10 [20000..30000]: 4982 ms  (2007 ops/s)
+  batch 4/10 [30000..40000]: 5532 ms  (1807 ops/s)
+  batch 5/10 [40000..50000]: 5499 ms  (1818 ops/s)
+  batch 6/10 [50000..60000]: 5288 ms  (1890 ops/s)
+  batch 7/10 [60000..70000]: 5576 ms  (1793 ops/s)
+  batch 8/10 [70000..80000]: 3906 ms  (2559 ops/s)
+  batch 9/10 [80000..90000]: 5656 ms  (1768 ops/s)
+  batch 10/10 [90000..100000]: 5591 ms  (1788 ops/s)
+  total: 51984 ms  (1923 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 5100 ms  (1960 ops/s)
+  batch 2/10 [10000..20000]: 5016 ms  (1993 ops/s)
+  batch 3/10 [20000..30000]: 5014 ms  (1994 ops/s)
+  batch 4/10 [30000..40000]: 5569 ms  (1795 ops/s)
+  batch 5/10 [40000..50000]: 5546 ms  (1802 ops/s)
+  batch 6/10 [50000..60000]: 5502 ms  (1817 ops/s)
+  batch 7/10 [60000..70000]: 4862 ms  (2056 ops/s)
+  batch 8/10 [70000..80000]: 4586 ms  (2180 ops/s)
+  batch 9/10 [80000..90000]: 5647 ms  (1770 ops/s)
+  batch 10/10 [90000..100000]: 5130 ms  (1949 ops/s)
+  total: 51976 ms  (1923 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 5115 ms  (1954 ops/s)
+  batch 2/10 [10000..20000]: 4999 ms  (2000 ops/s)
+  batch 3/10 [20000..30000]: 4993 ms  (2002 ops/s)
+  batch 4/10 [30000..40000]: 5544 ms  (1803 ops/s)
+  batch 5/10 [40000..50000]: 5395 ms  (1853 ops/s)
+  batch 6/10 [50000..60000]: 5353 ms  (1868 ops/s)
+  batch 7/10 [60000..70000]: 5281 ms  (1893 ops/s)
+  batch 8/10 [70000..80000]: 4910 ms  (2036 ops/s)
+  batch 9/10 [80000..90000]: 5656 ms  (1767 ops/s)
+  batch 10/10 [90000..100000]: 5634 ms  (1774 ops/s)
+  total: 52883 ms  (1890 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2470 ms  (4048 ops/s)
+  batch 2/10 [10000..20000]: 1694 ms  (5901 ops/s)
+  batch 3/10 [20000..30000]: 1706 ms  (5860 ops/s)
+  batch 4/10 [30000..40000]: 1770 ms  (5649 ops/s)
+  batch 5/10 [40000..50000]: 2024 ms  (4940 ops/s)
+  batch 6/10 [50000..60000]: 1757 ms  (5689 ops/s)
+  batch 7/10 [60000..70000]: 1839 ms  (5435 ops/s)
+  batch 8/10 [70000..80000]: 1932 ms  (5173 ops/s)
+  batch 9/10 [80000..90000]: 1857 ms  (5383 ops/s)
+  batch 10/10 [90000..100000]: 1844 ms  (5421 ops/s)
+  total: 18897 ms  (5291 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1596 ms  (6264 ops/s)
+  batch 2/10 [10000..20000]: 1556 ms  (6424 ops/s)
+  batch 3/10 [20000..30000]: 2395 ms  (4174 ops/s)
+  batch 4/10 [30000..40000]: 1930 ms  (5180 ops/s)
+  batch 5/10 [40000..50000]: 1797 ms  (5564 ops/s)
+  batch 6/10 [50000..60000]: 1787 ms  (5593 ops/s)
+  batch 7/10 [60000..70000]: 1831 ms  (5461 ops/s)
+  batch 8/10 [70000..80000]: 1780 ms  (5617 ops/s)
+  batch 9/10 [80000..90000]: 1848 ms  (5411 ops/s)
+  batch 10/10 [90000..100000]: 1819 ms  (5495 ops/s)
+  total: 18342 ms  (5451 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2490 ms  (4015 ops/s)
+  batch 2/10 [10000..20000]: 1556 ms  (6422 ops/s)
+  batch 3/10 [20000..30000]: 1547 ms  (6461 ops/s)
+  batch 4/10 [30000..40000]: 1794 ms  (5573 ops/s)
+  batch 5/10 [40000..50000]: 1786 ms  (5596 ops/s)
+  batch 6/10 [50000..60000]: 2004 ms  (4988 ops/s)
+  batch 7/10 [60000..70000]: 1896 ms  (5271 ops/s)
+  batch 8/10 [70000..80000]: 1989 ms  (5026 ops/s)
+  batch 9/10 [80000..90000]: 1949 ms  (5128 ops/s)
+  batch 10/10 [90000..100000]: 1744 ms  (5730 ops/s)
+  total: 18761 ms  (5330 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t4_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           4  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 640 ms  (15617 ops/s)
+  batch 2/10 [10000..20000]: 610 ms  (16385 ops/s)
+  batch 3/10 [20000..30000]: 627 ms  (15935 ops/s)
+  batch 4/10 [30000..40000]: 680 ms  (14699 ops/s)
+  batch 5/10 [40000..50000]: 672 ms  (14874 ops/s)
+  batch 6/10 [50000..60000]: 565 ms  (17687 ops/s)
+  batch 7/10 [60000..70000]: 567 ms  (17612 ops/s)
+  batch 8/10 [70000..80000]: 572 ms  (17463 ops/s)
+  batch 9/10 [80000..90000]: 583 ms  (17138 ops/s)
+  batch 10/10 [90000..100000]: 582 ms  (17180 ops/s)
+  total: 6102 ms  (16387 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 531 ms  (18813 ops/s)
+  batch 2/10 [10000..20000]: 508 ms  (19664 ops/s)
+  batch 3/10 [20000..30000]: 528 ms  (18916 ops/s)
+  batch 4/10 [30000..40000]: 563 ms  (17760 ops/s)
+  batch 5/10 [40000..50000]: 566 ms  (17643 ops/s)
+  batch 6/10 [50000..60000]: 575 ms  (17385 ops/s)
+  batch 7/10 [60000..70000]: 569 ms  (17561 ops/s)
+  batch 8/10 [70000..80000]: 577 ms  (17324 ops/s)
+  batch 9/10 [80000..90000]: 583 ms  (17140 ops/s)
+  batch 10/10 [90000..100000]: 586 ms  (17041 ops/s)
+  total: 5590 ms  (17887 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 527 ms  (18971 ops/s)
+  batch 2/10 [10000..20000]: 516 ms  (19343 ops/s)
+  batch 3/10 [20000..30000]: 523 ms  (19106 ops/s)
+  batch 4/10 [30000..40000]: 563 ms  (17742 ops/s)
+  batch 5/10 [40000..50000]: 556 ms  (17977 ops/s)
+  batch 6/10 [50000..60000]: 569 ms  (17572 ops/s)
+  batch 7/10 [60000..70000]: 568 ms  (17601 ops/s)
+  batch 8/10 [70000..80000]: 572 ms  (17468 ops/s)
+  batch 9/10 [80000..90000]: 587 ms  (17028 ops/s)
+  batch 10/10 [90000..100000]: 595 ms  (16779 ops/s)
+  total: 5580 ms  (17920 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t8_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           8  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 305 ms  (32758 ops/s)
+  batch 2/10 [10000..20000]: 307 ms  (32555 ops/s)
+  batch 3/10 [20000..30000]: 309 ms  (32339 ops/s)
+  batch 4/10 [30000..40000]: 345 ms  (28976 ops/s)
+  batch 5/10 [40000..50000]: 348 ms  (28684 ops/s)
+  batch 6/10 [50000..60000]: 355 ms  (28124 ops/s)
+  batch 7/10 [60000..70000]: 358 ms  (27913 ops/s)
+  batch 8/10 [70000..80000]: 366 ms  (27314 ops/s)
+  batch 9/10 [80000..90000]: 371 ms  (26937 ops/s)
+  batch 10/10 [90000..100000]: 372 ms  (26864 ops/s)
+  total: 3438 ms  (29080 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 311 ms  (32108 ops/s)
+  batch 2/10 [10000..20000]: 297 ms  (33562 ops/s)
+  batch 3/10 [20000..30000]: 309 ms  (32297 ops/s)
+  batch 4/10 [30000..40000]: 346 ms  (28824 ops/s)
+  batch 5/10 [40000..50000]: 349 ms  (28630 ops/s)
+  batch 6/10 [50000..60000]: 353 ms  (28316 ops/s)
+  batch 7/10 [60000..70000]: 358 ms  (27880 ops/s)
+  batch 8/10 [70000..80000]: 364 ms  (27452 ops/s)
+  batch 9/10 [80000..90000]: 364 ms  (27408 ops/s)
+  batch 10/10 [90000..100000]: 371 ms  (26898 ops/s)
+  total: 3427 ms  (29172 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 307 ms  (32507 ops/s)
+  batch 2/10 [10000..20000]: 302 ms  (33039 ops/s)
+  batch 3/10 [20000..30000]: 317 ms  (31530 ops/s)
+  batch 4/10 [30000..40000]: 349 ms  (28638 ops/s)
+  batch 5/10 [40000..50000]: 351 ms  (28419 ops/s)
+  batch 6/10 [50000..60000]: 357 ms  (27955 ops/s)
+  batch 7/10 [60000..70000]: 361 ms  (27667 ops/s)
+  batch 8/10 [70000..80000]: 365 ms  (27389 ops/s)
+  batch 9/10 [80000..90000]: 367 ms  (27208 ops/s)
+  batch 10/10 [90000..100000]: 375 ms  (26615 ops/s)
+  total: 3455 ms  (28935 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t16_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           16  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 235 ms  (42477 ops/s)
+  batch 2/10 [10000..20000]: 224 ms  (44610 ops/s)
+  batch 3/10 [20000..30000]: 230 ms  (43349 ops/s)
+  batch 4/10 [30000..40000]: 262 ms  (38131 ops/s)
+  batch 5/10 [40000..50000]: 274 ms  (36475 ops/s)
+  batch 6/10 [50000..60000]: 275 ms  (36304 ops/s)
+  batch 7/10 [60000..70000]: 284 ms  (35154 ops/s)
+  batch 8/10 [70000..80000]: 288 ms  (34614 ops/s)
+  batch 9/10 [80000..90000]: 299 ms  (33344 ops/s)
+  batch 10/10 [90000..100000]: 299 ms  (33436 ops/s)
+  total: 2674 ms  (37390 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 237 ms  (42165 ops/s)
+  batch 2/10 [10000..20000]: 224 ms  (44502 ops/s)
+  batch 3/10 [20000..30000]: 230 ms  (43290 ops/s)
+  batch 4/10 [30000..40000]: 265 ms  (37639 ops/s)
+  batch 5/10 [40000..50000]: 271 ms  (36849 ops/s)
+  batch 6/10 [50000..60000]: 281 ms  (35516 ops/s)
+  batch 7/10 [60000..70000]: 283 ms  (35219 ops/s)
+  batch 8/10 [70000..80000]: 298 ms  (33451 ops/s)
+  batch 9/10 [80000..90000]: 301 ms  (33190 ops/s)
+  batch 10/10 [90000..100000]: 304 ms  (32850 ops/s)
+  total: 2700 ms  (37036 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 235 ms  (42544 ops/s)
+  batch 2/10 [10000..20000]: 225 ms  (44258 ops/s)
+  batch 3/10 [20000..30000]: 232 ms  (42997 ops/s)
+  batch 4/10 [30000..40000]: 269 ms  (37097 ops/s)
+  batch 5/10 [40000..50000]: 271 ms  (36855 ops/s)
+  batch 6/10 [50000..60000]: 277 ms  (36097 ops/s)
+  batch 7/10 [60000..70000]: 285 ms  (35019 ops/s)
+  batch 8/10 [70000..80000]: 291 ms  (34310 ops/s)
+  batch 9/10 [80000..90000]: 299 ms  (33371 ops/s)
+  batch 10/10 [90000..100000]: 300 ms  (33223 ops/s)
+  total: 2689 ms  (37186 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t32_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           32  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 221 ms  (45106 ops/s)
+  batch 2/10 [10000..20000]: 211 ms  (47210 ops/s)
+  batch 3/10 [20000..30000]: 222 ms  (44926 ops/s)
+  batch 4/10 [30000..40000]: 269 ms  (37139 ops/s)
+  batch 5/10 [40000..50000]: 263 ms  (37969 ops/s)
+  batch 6/10 [50000..60000]: 270 ms  (36962 ops/s)
+  batch 7/10 [60000..70000]: 287 ms  (34837 ops/s)
+  batch 8/10 [70000..80000]: 289 ms  (34493 ops/s)
+  batch 9/10 [80000..90000]: 303 ms  (32927 ops/s)
+  batch 10/10 [90000..100000]: 300 ms  (33272 ops/s)
+  total: 2640 ms  (37872 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 218 ms  (45715 ops/s)
+  batch 2/10 [10000..20000]: 218 ms  (45668 ops/s)
+  batch 3/10 [20000..30000]: 223 ms  (44835 ops/s)
+  batch 4/10 [30000..40000]: 253 ms  (39494 ops/s)
+  batch 5/10 [40000..50000]: 266 ms  (37517 ops/s)
+  batch 6/10 [50000..60000]: 281 ms  (35462 ops/s)
+  batch 7/10 [60000..70000]: 287 ms  (34777 ops/s)
+  batch 8/10 [70000..80000]: 292 ms  (34182 ops/s)
+  batch 9/10 [80000..90000]: 303 ms  (32960 ops/s)
+  batch 10/10 [90000..100000]: 307 ms  (32545 ops/s)
+  total: 2653 ms  (37689 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 218 ms  (45679 ops/s)
+  batch 2/10 [10000..20000]: 222 ms  (44933 ops/s)
+  batch 3/10 [20000..30000]: 226 ms  (44140 ops/s)
+  batch 4/10 [30000..40000]: 254 ms  (39342 ops/s)
+  batch 5/10 [40000..50000]: 274 ms  (36438 ops/s)
+  batch 6/10 [50000..60000]: 276 ms  (36117 ops/s)
+  batch 7/10 [60000..70000]: 287 ms  (34837 ops/s)
+  batch 8/10 [70000..80000]: 301 ms  (33126 ops/s)
+  batch 9/10 [80000..90000]: 305 ms  (32729 ops/s)
+  batch 10/10 [90000..100000]: 306 ms  (32625 ops/s)
+  total: 2674 ms  (37390 ops/s)
+  [T5] mixed_od_multi_v0.0_d0.1_random_t64_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T5
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           64  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 266 ms  (37456 ops/s)
+  batch 2/10 [10000..20000]: 273 ms  (36599 ops/s)
+  batch 3/10 [20000..30000]: 268 ms  (37243 ops/s)
+  batch 4/10 [30000..40000]: 339 ms  (29483 ops/s)
+  batch 5/10 [40000..50000]: 329 ms  (30322 ops/s)
+  batch 6/10 [50000..60000]: 332 ms  (30089 ops/s)
+  batch 7/10 [60000..70000]: 364 ms  (27429 ops/s)
+  batch 8/10 [70000..80000]: 384 ms  (26025 ops/s)
+  batch 9/10 [80000..90000]: 383 ms  (26063 ops/s)
+  batch 10/10 [90000..100000]: 383 ms  (26086 ops/s)
+  total: 3325 ms  (30067 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 287 ms  (34765 ops/s)
+  batch 2/10 [10000..20000]: 254 ms  (39348 ops/s)
+  batch 3/10 [20000..30000]: 277 ms  (36081 ops/s)
+  batch 4/10 [30000..40000]: 315 ms  (31673 ops/s)
+  batch 5/10 [40000..50000]: 341 ms  (29278 ops/s)
+  batch 6/10 [50000..60000]: 362 ms  (27606 ops/s)
+  batch 7/10 [60000..70000]: 360 ms  (27756 ops/s)
+  batch 8/10 [70000..80000]: 359 ms  (27843 ops/s)
+  batch 9/10 [80000..90000]: 381 ms  (26210 ops/s)
+  batch 10/10 [90000..100000]: 401 ms  (24902 ops/s)
+  total: 3340 ms  (29931 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 283 ms  (35312 ops/s)
+  batch 2/10 [10000..20000]: 252 ms  (39675 ops/s)
+  batch 3/10 [20000..30000]: 273 ms  (36601 ops/s)
+  batch 4/10 [30000..40000]: 332 ms  (30045 ops/s)
+  batch 5/10 [40000..50000]: 348 ms  (28688 ops/s)
+  batch 6/10 [50000..60000]: 347 ms  (28774 ops/s)
+  batch 7/10 [60000..70000]: 382 ms  (26133 ops/s)
+  batch 8/10 [70000..80000]: 406 ms  (24613 ops/s)
+  batch 9/10 [80000..90000]: 413 ms  (24190 ops/s)
+  batch 10/10 [90000..100000]: 391 ms  (25530 ops/s)
+  total: 3431 ms  (29142 ops/s)
+  [T6] mixed_od_multi_v0.0_d0.1_random_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T6
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            random
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 1610 ms  (6208 ops/s)
+  batch 2/10 [10000..20000]: 1589 ms  (6292 ops/s)
+  batch 3/10 [20000..30000]: 2176 ms  (4593 ops/s)
+  batch 4/10 [30000..40000]: 1885 ms  (5303 ops/s)
+  batch 5/10 [40000..50000]: 1794 ms  (5571 ops/s)
+  batch 6/10 [50000..60000]: 1782 ms  (5610 ops/s)
+  batch 7/10 [60000..70000]: 1858 ms  (5380 ops/s)
+  batch 8/10 [70000..80000]: 2025 ms  (4936 ops/s)
+  batch 9/10 [80000..90000]: 1703 ms  (5869 ops/s)
+  batch 10/10 [90000..100000]: 1818 ms  (5500 ops/s)
+  total: 18246 ms  (5480 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1602 ms  (6241 ops/s)
+  batch 2/10 [10000..20000]: 1634 ms  (6117 ops/s)
+  batch 3/10 [20000..30000]: 1639 ms  (6101 ops/s)
+  batch 4/10 [30000..40000]: 2608 ms  (3834 ops/s)
+  batch 5/10 [40000..50000]: 1879 ms  (5320 ops/s)
+  batch 6/10 [50000..60000]: 1726 ms  (5792 ops/s)
+  batch 7/10 [60000..70000]: 1781 ms  (5613 ops/s)
+  batch 8/10 [70000..80000]: 1917 ms  (5214 ops/s)
+  batch 9/10 [80000..90000]: 2040 ms  (4901 ops/s)
+  batch 10/10 [90000..100000]: 1815 ms  (5508 ops/s)
+  total: 18644 ms  (5363 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 1658 ms  (6029 ops/s)
+  batch 2/10 [10000..20000]: 1545 ms  (6470 ops/s)
+  batch 3/10 [20000..30000]: 1817 ms  (5502 ops/s)
+  batch 4/10 [30000..40000]: 2657 ms  (3763 ops/s)
+  batch 5/10 [40000..50000]: 2259 ms  (4425 ops/s)
+  batch 6/10 [50000..60000]: 1973 ms  (5067 ops/s)
+  batch 7/10 [60000..70000]: 1823 ms  (5485 ops/s)
+  batch 8/10 [70000..80000]: 2027 ms  (4931 ops/s)
+  batch 9/10 [80000..90000]: 1742 ms  (5740 ops/s)
+  batch 10/10 [90000..100000]: 1856 ms  (5387 ops/s)
+  total: 19360 ms  (5165 ops/s)
+  [T6] mixed_od_multi_v0.0_d0.1_sequential_t2_s100000
+dvi_txn_benchmark_naive_sched
+  experiment:        T6
+  workload:          mixed
+  mechanism:         od_multi
+  violation:         0
+  duplicate_rate:    0.1
+  num_unique_lhs:    90000
+  access:            sequential
+  size:              100000
+  batch_size:        10000
+  threads:           2  (concurrent transactions)
+  scheduler_workers: 120  (intra-op parallelism)
+  pre_pop:           100000
+
+=== Iteration 1 ===
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  batch 1/10 [0..10000]: 2056 ms  (4863 ops/s)
+  batch 2/10 [10000..20000]: 1517 ms  (6591 ops/s)
+  batch 3/10 [20000..30000]: 1497 ms  (6675 ops/s)
+  batch 4/10 [30000..40000]: 1624 ms  (6154 ops/s)
+  batch 5/10 [40000..50000]: 1484 ms  (6737 ops/s)
+  batch 6/10 [50000..60000]: 1508 ms  (6630 ops/s)
+  batch 7/10 [60000..70000]: 1600 ms  (6248 ops/s)
+  batch 8/10 [70000..80000]: 1598 ms  (6255 ops/s)
+  batch 9/10 [80000..90000]: 1591 ms  (6283 ops/s)
+  batch 10/10 [90000..100000]: 1741 ms  (5743 ops/s)
+  total: 16219 ms  (6165 ops/s)
+
+=== Iteration 2 ===
+  batch 1/10 [0..10000]: 1725 ms  (5794 ops/s)
+  batch 2/10 [10000..20000]: 1638 ms  (6102 ops/s)
+  batch 3/10 [20000..30000]: 2331 ms  (4289 ops/s)
+  batch 4/10 [30000..40000]: 1657 ms  (6031 ops/s)
+  batch 5/10 [40000..50000]: 1474 ms  (6782 ops/s)
+  batch 6/10 [50000..60000]: 1523 ms  (6565 ops/s)
+  batch 7/10 [60000..70000]: 1679 ms  (5955 ops/s)
+  batch 8/10 [70000..80000]: 1728 ms  (5786 ops/s)
+  batch 9/10 [80000..90000]: 1567 ms  (6378 ops/s)
+  batch 10/10 [90000..100000]: 1631 ms  (6130 ops/s)
+  total: 16957 ms  (5897 ops/s)
+
+=== Iteration 3 ===
+  batch 1/10 [0..10000]: 2183 ms  (4579 ops/s)
+  batch 2/10 [10000..20000]: 2306 ms  (4335 ops/s)
+  batch 3/10 [20000..30000]: 1601 ms  (6244 ops/s)
+  batch 4/10 [30000..40000]: 1654 ms  (6044 ops/s)
+  batch 5/10 [40000..50000]: 1736 ms  (5759 ops/s)
+  batch 6/10 [50000..60000]: 1559 ms  (6413 ops/s)
+  batch 7/10 [60000..70000]: 1648 ms  (6066 ops/s)
+  batch 8/10 [70000..80000]: 1497 ms  (6677 ops/s)
+  batch 9/10 [80000..90000]: 1546 ms  (6467 ops/s)
+  batch 10/10 [90000..100000]: 1599 ms  (6250 ops/s)
+  total: 17333 ms  (5769 ops/s)
+
+======================================================================
+  Done.
+  Results : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/naive_txn_sched/20260422_012242/results.csv
+  Meta    : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/naive_txn_sched/20260422_012242/meta.txt
+  Log     : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/naive_txn_sched/20260422_012242/run.log
+======================================================================

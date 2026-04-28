@@ -13,8 +13,22 @@
 // (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92194).
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+// Boost graphviz pulls in xpressive internals that trigger deprecated-copy warnings
+// with AppleClang. In this project they are external headers and not actionable.
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-copy-with-user-provided-copy"
+#pragma clang diagnostic ignored "-Wdeprecated-copy"
+#endif
+
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graphviz.hpp>
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 #pragma GCC diagnostic pop
 
 #include "operators/print.hpp"

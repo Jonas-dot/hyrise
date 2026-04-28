@@ -1,0 +1,414 @@
+=== Micro-Benchmark: M1 ===
+Mechanisms  : off fd_single fd_multi od_single od_multi 
+Operations  : insert lookup delete 
+Viol rates  : 0% 
+Dup rates   : 10% 
+Sizes       : 100000 
+Checkpoint  : 10000
+Threads     : 1 16 
+Iterations  : 3
+Total cells : 180
+Output      : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/micro/20260422_010839/results.csv
+===========================================
+
+[MECH] === off (multi=false, od=false) ===
+[DATA] Generating FD entries: random size=100000 viol=0% dup=10% multi=false ... done (1 MB entries + 1 MB keys)
+  [1/180] off / insert / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 52.1 ms (2M ops/s) [10 batches]
+    iter 2/3 ... 50.7 ms (2M ops/s) [10 batches]
+    iter 3/3 ... 49.0 ms (2M ops/s) [10 batches]
+  [2/180] off / insert / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 22.0 ms (5M ops/s) [10 batches]
+    iter 2/3 ... 19.0 ms (5M ops/s) [10 batches]
+    iter 3/3 ... 18.8 ms (5M ops/s) [10 batches]
+  [3/180] off / lookup / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 33.5 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 32.7 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 32.8 ms (3M ops/s) [10 batches]
+  [4/180] off / lookup / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 13.4 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 12.6 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 12.6 ms (8M ops/s) [10 batches]
+  [5/180] off / delete / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 37.1 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 37.1 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 37.4 ms (3M ops/s) [10 batches]
+  [6/180] off / delete / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 14.3 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 13.7 ms (7M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 13.6 ms (7M ops/s) [10 batches]
+[MEM] Freed entry vectors for off
+
+[MECH] === fd_single (multi=false, od=false) ===
+[DATA] Generating FD entries: random size=100000 viol=0% dup=10% multi=false ... done (1 MB entries + 1 MB keys)
+  [7/180] fd_single / insert / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 78.5 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 72.6 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 70.8 ms (1M ops/s) [10 batches]
+  [8/180] fd_single / insert / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 29.7 ms (3M ops/s) [10 batches]
+    iter 2/3 ... 22.5 ms (4M ops/s) [10 batches]
+    iter 3/3 ... 22.5 ms (4M ops/s) [10 batches]
+  [9/180] fd_single / lookup / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 34.0 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 34.7 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 35.0 ms (3M ops/s) [10 batches]
+  [10/180] fd_single / lookup / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.0 ms (8M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.4 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.4 ms (8M ops/s) [10 batches]
+  [11/180] fd_single / delete / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 72.2 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 68.3 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 68.1 ms (1M ops/s) [10 batches]
+  [12/180] fd_single / delete / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 23.8 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 23.7 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 22.9 ms (4M ops/s) [10 batches]
+[MEM] Freed entry vectors for fd_single
+
+[MECH] === fd_multi (multi=true, od=false) ===
+[DATA] Generating FD entries: random size=100000 viol=0% dup=10% multi=true ... done (1 MB entries + 1 MB keys)
+  [13/180] fd_multi / insert / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 79.3 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 73.4 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 74.0 ms (1M ops/s) [10 batches]
+  [14/180] fd_multi / insert / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 26.0 ms (4M ops/s) [10 batches]
+    iter 2/3 ... 22.7 ms (4M ops/s) [10 batches]
+    iter 3/3 ... 22.5 ms (4M ops/s) [10 batches]
+  [15/180] fd_multi / lookup / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.7 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.0 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.4 ms (3M ops/s) [10 batches]
+  [16/180] fd_multi / lookup / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.6 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.2 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.7 ms (8M ops/s) [10 batches]
+  [17/180] fd_multi / delete / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 72.5 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 70.5 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 68.0 ms (1M ops/s) [10 batches]
+  [18/180] fd_multi / delete / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 23.1 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 22.8 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 23.6 ms (4M ops/s) [10 batches]
+[MEM] Freed entry vectors for fd_multi
+
+[MECH] === od_single (multi=false, od=true) ===
+[DATA] Generating OD entries: random size=100000 viol=0% multi=false ... done (1 MB entries + 1 MB keys)
+  [19/180] od_single / insert / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 206.0 ms (0M ops/s) [10 batches]
+    iter 2/3 ... 198.1 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 200.8 ms (0M ops/s) [10 batches]
+  [20/180] od_single / insert / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 62.0 ms (2M ops/s) [10 batches]
+    iter 2/3 ... 57.9 ms (2M ops/s) [10 batches]
+    iter 3/3 ... 57.4 ms (2M ops/s) [10 batches]
+  [21/180] od_single / lookup / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 37.9 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 38.1 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 37.4 ms (3M ops/s) [10 batches]
+  [22/180] od_single / lookup / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.8 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.8 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.7 ms (8M ops/s) [10 batches]
+  [23/180] od_single / delete / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 191.3 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 191.2 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 192.1 ms (1M ops/s) [10 batches]
+  [24/180] od_single / delete / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 43.1 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 43.4 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 43.1 ms (2M ops/s) [10 batches]
+[MEM] Freed entry vectors for od_single
+
+[MECH] === od_multi (multi=true, od=true) ===
+[DATA] Generating OD entries: random size=100000 viol=0% multi=true ... done (1 MB entries + 1 MB keys)
+  [25/180] od_multi / insert / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 204.9 ms (0M ops/s) [10 batches]
+    iter 2/3 ... 197.4 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 196.7 ms (1M ops/s) [10 batches]
+  [26/180] od_multi / insert / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 61.4 ms (2M ops/s) [10 batches]
+    iter 2/3 ... 58.2 ms (2M ops/s) [10 batches]
+    iter 3/3 ... 56.7 ms (2M ops/s) [10 batches]
+  [27/180] od_multi / lookup / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.7 ms (3M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.1 ms (3M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 36.4 ms (3M ops/s) [10 batches]
+  [28/180] od_multi / lookup / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.3 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.5 ms (7M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.9 ms (8M ops/s) [10 batches]
+  [29/180] od_multi / delete / random / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 188.1 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 187.0 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 189.4 ms (1M ops/s) [10 batches]
+  [30/180] od_multi / delete / random / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 42.0 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 42.3 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 43.3 ms (2M ops/s) [10 batches]
+[MEM] Freed entry vectors for od_multi
+
+[MECH] === off (multi=false, od=false) ===
+[DATA] Generating FD entries: sequential size=100000 viol=0% dup=10% multi=false ... done (1 MB entries + 1 MB keys)
+  [31/180] off / insert / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 40.3 ms (2M ops/s) [10 batches]
+    iter 2/3 ... 37.6 ms (3M ops/s) [10 batches]
+    iter 3/3 ... 38.3 ms (3M ops/s) [10 batches]
+  [32/180] off / insert / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 20.0 ms (5M ops/s) [10 batches]
+    iter 2/3 ... 17.5 ms (6M ops/s) [10 batches]
+    iter 3/3 ... 17.9 ms (6M ops/s) [10 batches]
+  [33/180] off / lookup / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 19.7 ms (5M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 20.0 ms (5M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 19.3 ms (5M ops/s) [10 batches]
+  [34/180] off / lookup / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 13.3 ms (8M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 12.1 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for lookup ... done.
+ 12.6 ms (8M ops/s) [10 batches]
+  [35/180] off / delete / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 22.6 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 22.9 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 23.2 ms (4M ops/s) [10 batches]
+  [36/180] off / delete / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 27.7 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 26.8 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating OFF tree with 100000 entries for delete ... done.
+ 27.0 ms (4M ops/s) [10 batches]
+[MEM] Freed entry vectors for off
+
+[MECH] === fd_single (multi=false, od=false) ===
+[DATA] Generating FD entries: sequential size=100000 viol=0% dup=10% multi=false ... done (1 MB entries + 1 MB keys)
+  [37/180] fd_single / insert / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 81.3 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 75.4 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 74.6 ms (1M ops/s) [10 batches]
+  [38/180] fd_single / insert / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 33.1 ms (3M ops/s) [10 batches]
+    iter 2/3 ... 28.5 ms (4M ops/s) [10 batches]
+    iter 3/3 ... 28.2 ms (4M ops/s) [10 batches]
+  [39/180] fd_single / lookup / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 25.8 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 23.7 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 24.0 ms (4M ops/s) [10 batches]
+  [40/180] fd_single / lookup / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.7 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.9 ms (7M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.9 ms (8M ops/s) [10 batches]
+  [41/180] fd_single / delete / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 59.5 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 60.4 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 60.0 ms (2M ops/s) [10 batches]
+  [42/180] fd_single / delete / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 59.7 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 59.3 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 60.2 ms (2M ops/s) [10 batches]
+[MEM] Freed entry vectors for fd_single
+
+[MECH] === fd_multi (multi=true, od=false) ===
+[DATA] Generating FD entries: sequential size=100000 viol=0% dup=10% multi=true ... done (1 MB entries + 1 MB keys)
+  [43/180] fd_multi / insert / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 77.2 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 68.5 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 65.6 ms (2M ops/s) [10 batches]
+  [44/180] fd_multi / insert / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 31.6 ms (3M ops/s) [10 batches]
+    iter 2/3 ... 28.0 ms (4M ops/s) [10 batches]
+    iter 3/3 ... 27.0 ms (4M ops/s) [10 batches]
+  [45/180] fd_multi / lookup / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 19.6 ms (5M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 21.2 ms (5M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 20.8 ms (5M ops/s) [10 batches]
+  [46/180] fd_multi / lookup / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.7 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.6 ms (7M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 12.8 ms (8M ops/s) [10 batches]
+  [47/180] fd_multi / delete / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 52.4 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 54.3 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 52.6 ms (2M ops/s) [10 batches]
+  [48/180] fd_multi / delete / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 56.8 ms (2M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 56.2 ms (2M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 56.1 ms (2M ops/s) [10 batches]
+[MEM] Freed entry vectors for fd_multi
+
+[MECH] === od_single (multi=false, od=true) ===
+[DATA] Generating OD entries: sequential size=100000 viol=0% multi=false ... done (1 MB entries + 1 MB keys)
+  [49/180] od_single / insert / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 242.5 ms (0M ops/s) [10 batches]
+    iter 2/3 ... 219.1 ms (0M ops/s) [10 batches]
+    iter 3/3 ... 213.8 ms (0M ops/s) [10 batches]
+  [50/180] od_single / insert / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 89.2 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 79.4 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 77.5 ms (1M ops/s) [10 batches]
+  [51/180] od_single / lookup / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 24.9 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 25.0 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 23.9 ms (4M ops/s) [10 batches]
+  [52/180] od_single / lookup / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.9 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 14.1 ms (7M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.4 ms (7M ops/s) [10 batches]
+  [53/180] od_single / delete / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 118.9 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 115.9 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 118.5 ms (1M ops/s) [10 batches]
+  [54/180] od_single / delete / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 125.6 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 124.9 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 125.2 ms (1M ops/s) [10 batches]
+[MEM] Freed entry vectors for od_single
+
+[MECH] === od_multi (multi=true, od=true) ===
+[DATA] Generating OD entries: sequential size=100000 viol=0% multi=true ... done (1 MB entries + 1 MB keys)
+  [55/180] od_multi / insert / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ... 214.6 ms (0M ops/s) [10 batches]
+    iter 2/3 ... 213.8 ms (0M ops/s) [10 batches]
+    iter 3/3 ... 209.3 ms (0M ops/s) [10 batches]
+  [56/180] od_multi / insert / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ... 89.4 ms (1M ops/s) [10 batches]
+    iter 2/3 ... 78.5 ms (1M ops/s) [10 batches]
+    iter 3/3 ... 77.4 ms (1M ops/s) [10 batches]
+  [57/180] od_multi / lookup / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 24.3 ms (4M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 23.1 ms (4M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 23.3 ms (4M ops/s) [10 batches]
+  [58/180] od_multi / lookup / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.9 ms (7M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.3 ms (8M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for lookup (direct insert) ... done.
+ 13.2 ms (8M ops/s) [10 batches]
+  [59/180] od_multi / delete / sequential / size=100000 viol=0% dup=10% t=1
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 114.8 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 112.3 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 110.9 ms (1M ops/s) [10 batches]
+  [60/180] od_multi / delete / sequential / size=100000 viol=0% dup=10% t=16
+    iter 1/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 125.0 ms (1M ops/s) [10 batches]
+    iter 2/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 125.1 ms (1M ops/s) [10 batches]
+    iter 3/3 ...    [PREPOP] Pre-populating DVI tree with 100000 entries for delete (direct insert, no TxnCtx) ... done.
+ 124.5 ms (1M ops/s) [10 batches]
+[MEM] Freed entry vectors for od_multi
+
+=== Done. Results: /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/micro/20260422_010839/results.csv ===

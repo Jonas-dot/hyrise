@@ -136,3 +136,47 @@ target_link_libraries(
     hyrise
     hyriseBenchmarkLib
 )
+
+# Naive DVI transaction benchmark (no pooling / compaction -- shows dead-row degradation)
+add_executable(
+    hyriseBenchmarkDVIndexNaive
+
+    operators/dvi_txn_benchmark_naive.cpp
+)
+
+target_link_libraries(
+    hyriseBenchmarkDVIndexNaive
+
+    hyrise
+    hyriseBenchmarkLib
+)
+
+# Scheduler-enabled naive DVI benchmark (same dead-row accumulation, but with
+# NodeQueueScheduler active for realistic intra-operator parallelism)
+add_executable(
+    hyriseBenchmarkDVIndexNaiveSched
+
+    operators/dvi_txn_benchmark_naive_sched.cpp
+)
+
+target_link_libraries(
+    hyriseBenchmarkDVIndexNaiveSched
+
+    hyrise
+    hyriseBenchmarkLib
+)
+
+# E2E DVI benchmark: measures the break-even point where the query speedup from
+# OD-based rewrites (Q82) outweighs the DVI maintenance overhead during writes.
+add_executable(
+    hyriseBenchmarkDVIndexE2E
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../dvi_benchmarks/src/e2e/dvi_e2e_benchmark.cpp
+)
+
+target_link_libraries(
+    hyriseBenchmarkDVIndexE2E
+
+    hyrise
+    hyriseBenchmarkLib
+)

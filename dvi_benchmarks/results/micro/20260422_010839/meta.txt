@@ -1,0 +1,16 @@
+experiment=M1
+timestamp=20260422_010839
+git_hash=57a56a3a
+host=sidon
+os=Linux 6.8.0-100-generic x86_64
+cxx_compiler=Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)
+binary=/home/Jonas.Baltruschat/hyrise/dvi_benchmarks/build/btree_benchmark
+mechanisms=off,fd_single,fd_multi,od_single,od_multi
+operations=insert,lookup,delete
+violation_rates=0.0
+det_ratios=0.1
+sizes=100000
+checkpoint_interval=10000
+threads=1,16
+access_pattern=both
+iterations=3

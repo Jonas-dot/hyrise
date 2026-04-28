@@ -20,6 +20,7 @@
 #include "storage/constraints/foreign_key_constraint.hpp"
 #include "storage/constraints/table_key_constraint.hpp"
 #include "storage/constraints/table_order_constraint.hpp"
+#include "storage/index/b_tree/b_tree_olc_index.hpp"
 #include "storage/index/chunk_index_statistics.hpp"
 #include "storage/index/partial_hash/partial_hash_index.hpp"
 #include "storage/index/table_index_statistics.hpp"
@@ -195,7 +196,33 @@ class Table : private Noncopyable {
   std::shared_ptr<TableStatistics> table_statistics() const;
 
   void set_table_statistics(const std::shared_ptr<TableStatistics>& table_statistics);
+
   /** @} */
+
+  // ---------------------------------------------------------------------------
+  // Validation dependency: one BTreeOLCIndex that tracks a FD/OD across the
+  // whole table.  Set once by the caller; maintained automatically by the
+  // Insert and Delete operators on every commit.
+  // ---------------------------------------------------------------------------
+  struct ValidationDependency {
+    std::shared_ptr<BTreeOLCIndex> index;
+    ColumnID lhs_column_id;
+    ColumnID rhs_column_id;
+    std::vector<ColumnID> lhs_column_ids;
+    std::vector<ColumnID> rhs_column_ids;
+    DependencyType dependency_type;
+  };
+
+  // Registers a validation dependency (FD or OD) on the given column pair.
+  // May be called multiple times to register more than one validator (e.g., FD + OD).
+  void set_dependency_validator(ColumnID lhs_col, ColumnID rhs_col, DependencyType dep_type);
+  void set_dependency_validator(const std::vector<ColumnID>& lhs_cols, const std::vector<ColumnID>& rhs_cols,
+                                DependencyType dep_type);
+  const std::vector<ValidationDependency>& dependency_validators() const;
+
+  // Attaches an already-constructed ValidationDependency (e.g., when compacting a table
+  // and reattaching existing DVI index objects to the new table without rebuilding them).
+  void attach_dependency_validator(const ValidationDependency& vd);
 
   std::vector<ChunkIndexStatistics> chunk_indexes_statistics() const;
 
@@ -297,6 +324,7 @@ class Table : private Noncopyable {
   std::vector<ChunkIndexStatistics> _chunk_indexes_statistics;
   std::vector<TableIndexStatistics> _table_indexes_statistics;
   pmr_vector<std::shared_ptr<PartialHashIndex>> _table_indexes;
+  std::vector<ValidationDependency> _validation_dependencies;
 
   // For tables with _type==Reference, the row count will not vary. As such, there is no need to iterate over all
   // chunks more than once.

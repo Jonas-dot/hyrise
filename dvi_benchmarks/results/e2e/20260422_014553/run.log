@@ -1,0 +1,341 @@
+======================================================================
+  E2E DVI Benchmark (Q82 crossover)
+  Binary      : /home/Jonas.Baltruschat/hyrise/build_release/hyriseBenchmarkDVIndexE2E
+  Batches     : 1000
+  Scale factor: 1
+  Iterations  : 3
+  Output      : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/
+  Dry-run     : false
+======================================================================
+
+--- Iteration 1/3 ---
+
+============================================================
+  Workload: INSERT_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] Build side larger than probe side in hash join at src/lib/operators/join_hash.cpp:90
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+
+  Workload: INSERT_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1360 ms
+  Write time  (DVI)     : 1517.45 ms
+  Write overhead        : 157.448 ms  (11.577 %)
+  Query time  (base)    : 43840.6 ms total
+  Query time  (opt)     : 12163.9 ms total
+  Query benefit         : 31676.7 ms total  (72.2542 %)
+  Break-even ratio      : 1 query pays for ~201 ops
+
+============================================================
+  Workload: UPDATE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: UPDATE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 2921.97 ms
+  Write time  (DVI)     : 2982.19 ms
+  Write overhead        : 60.219 ms  (2.0609 %)
+  Query time  (base)    : 49078.3 ms total
+  Query time  (opt)     : 12245.8 ms total
+  Query benefit         : 36832.5 ms total  (75.0485 %)
+  Break-even ratio      : 1 query pays for ~611 ops
+
+============================================================
+  Workload: DELETE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: DELETE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1752.96 ms
+  Write time  (DVI)     : 1851.8 ms
+  Write overhead        : 98.846 ms  (5.63881 %)
+  Query time  (base)    : 44404.7 ms total
+  Query time  (opt)     : 12244.2 ms total
+  Query benefit         : 32160.5 ms total  (72.4258 %)
+  Break-even ratio      : 1 query pays for ~325 ops
+
+============================================================
+  Workload: MIXED      
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: MIXED      
+  ------------------------------------------------
+  Write time  (no DVI)  : 5597.53 ms
+  Write time  (DVI)     : 5520.12 ms
+  Write overhead        : -77.4115 ms  (-1.38296 %)
+  Query time  (base)    : 53300.5 ms total
+  Query time  (opt)     : 12320 ms total
+  Query benefit         : 40980.5 ms total  (76.8858 %)
+  Break-even ratio      : write overhead unmeasurably small
+
+
+========================================================
+  E2E DVI Benchmark — Q82 Break-Even Summary
+  Scale factor : 1   1000 batches × 1 ops   1000 query runs
+========================================================
+  Workload       Break-even ratio (ops per query)
+  ---------      ------------------------
+  INSERT_ONLY   ~201
+  UPDATE_ONLY   ~611
+  DELETE_ONLY   ~325
+  MIXED         overhead negligible
+========================================================
+workload,batches,scale_factor,ops_no_dvi_ms,ops_dvi_ms,overhead_ms,overhead_pct,query_base_ms,query_opt_ms,benefit_ms,benefit_pct,break_even_ratio
+INSERT_ONLY,1000,1,1360,1517.45,157.448,11.577,43840.6,12163.9,31676.7,72.2542,201.188
+UPDATE_ONLY,1000,1,2921.97,2982.19,60.219,2.0609,49078.3,12245.8,36832.5,75.0485,611.642
+DELETE_ONLY,1000,1,1752.96,1851.8,98.846,5.63881,44404.7,12244.2,32160.5,72.4258,325.359
+MIXED,1000,1,5597.53,5520.12,-77.4115,-1.38296,53300.5,12320,40980.5,76.8858,0
+Results appended to: /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/results.csv
+
+--- Iteration 2/3 ---
+
+============================================================
+  Workload: INSERT_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] Build side larger than probe side in hash join at src/lib/operators/join_hash.cpp:90
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+
+  Workload: INSERT_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1350.9 ms
+  Write time  (DVI)     : 1509.02 ms
+  Write overhead        : 158.124 ms  (11.7051 %)
+  Query time  (base)    : 44205.4 ms total
+  Query time  (opt)     : 12207.6 ms total
+  Query benefit         : 31997.8 ms total  (72.3843 %)
+  Break-even ratio      : 1 query pays for ~202 ops
+
+============================================================
+  Workload: UPDATE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: UPDATE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 2867.5 ms
+  Write time  (DVI)     : 2962.72 ms
+  Write overhead        : 95.2127 ms  (3.3204 %)
+  Query time  (base)    : 48304.9 ms total
+  Query time  (opt)     : 12147 ms total
+  Query benefit         : 36157.9 ms total  (74.8535 %)
+  Break-even ratio      : 1 query pays for ~379 ops
+
+============================================================
+  Workload: DELETE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: DELETE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1733.01 ms
+  Write time  (DVI)     : 1846.53 ms
+  Write overhead        : 113.514 ms  (6.55007 %)
+  Query time  (base)    : 44486.6 ms total
+  Query time  (opt)     : 12160.8 ms total
+  Query benefit         : 32325.8 ms total  (72.6641 %)
+  Break-even ratio      : 1 query pays for ~284 ops
+
+============================================================
+  Workload: MIXED      
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: MIXED      
+  ------------------------------------------------
+  Write time  (no DVI)  : 5612.36 ms
+  Write time  (DVI)     : 5406.07 ms
+  Write overhead        : -206.287 ms  (-3.67559 %)
+  Query time  (base)    : 53888.8 ms total
+  Query time  (opt)     : 12020.1 ms total
+  Query benefit         : 41868.7 ms total  (77.6947 %)
+  Break-even ratio      : write overhead unmeasurably small
+
+
+========================================================
+  E2E DVI Benchmark — Q82 Break-Even Summary
+  Scale factor : 1   1000 batches × 1 ops   1000 query runs
+========================================================
+  Workload       Break-even ratio (ops per query)
+  ---------      ------------------------
+  INSERT_ONLY   ~202
+  UPDATE_ONLY   ~379
+  DELETE_ONLY   ~284
+  MIXED         overhead negligible
+========================================================
+workload,batches,scale_factor,ops_no_dvi_ms,ops_dvi_ms,overhead_ms,overhead_pct,query_base_ms,query_opt_ms,benefit_ms,benefit_pct,break_even_ratio
+INSERT_ONLY,1000,1,1350.9,1509.02,158.124,11.7051,44205.4,12207.6,31997.8,72.3843,202.358
+UPDATE_ONLY,1000,1,2867.5,2962.72,95.2127,3.3204,48304.9,12147,36157.9,74.8535,379.759
+DELETE_ONLY,1000,1,1733.01,1846.53,113.514,6.55007,44486.6,12160.8,32325.8,72.6641,284.775
+MIXED,1000,1,5612.36,5406.07,-206.287,-3.67559,53888.8,12020.1,41868.7,77.6947,0
+Results appended to: /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/results.csv
+
+--- Iteration 3/3 ---
+
+============================================================
+  Workload: INSERT_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] Build side larger than probe side in hash join at src/lib/operators/join_hash.cpp:90
+	Performance can be affected. This warning is only shown once.
+[PERF] Unresolved iterator created for AbstractPosList at src/lib/storage/pos_lists/abstract_pos_list.cpp:8
+	Performance can be affected. This warning is only shown once.
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+[PERF] operator[] used at src/lib/storage/value_segment.cpp:48
+	Performance can be affected. This warning is only shown once.
+
+  Workload: INSERT_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1330.09 ms
+  Write time  (DVI)     : 1502.41 ms
+  Write overhead        : 172.32 ms  (12.9556 %)
+  Query time  (base)    : 43136.1 ms total
+  Query time  (opt)     : 12212.9 ms total
+  Query benefit         : 30923.2 ms total  (71.6876 %)
+  Break-even ratio      : 1 query pays for ~179 ops
+
+============================================================
+  Workload: UPDATE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: UPDATE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 2964.29 ms
+  Write time  (DVI)     : 2984.03 ms
+  Write overhead        : 19.7404 ms  (0.665939 %)
+  Query time  (base)    : 50316.3 ms total
+  Query time  (opt)     : 12246.4 ms total
+  Query benefit         : 38069.9 ms total  (75.6611 %)
+  Break-even ratio      : 1 query pays for ~1928 ops
+
+============================================================
+  Workload: DELETE_ONLY
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: DELETE_ONLY
+  ------------------------------------------------
+  Write time  (no DVI)  : 1747.07 ms
+  Write time  (DVI)     : 1828.88 ms
+  Write overhead        : 81.8113 ms  (4.68278 %)
+  Query time  (base)    : 44797.1 ms total
+  Query time  (opt)     : 12121.5 ms total
+  Query benefit         : 32675.6 ms total  (72.9413 %)
+  Break-even ratio      : 1 query pays for ~399 ops
+
+============================================================
+  Workload: MIXED      
+============================================================
+  [B] loading TPC-DS (no DVI)...
+  [B] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+  [A] loading TPC-DS (with DVI)...
+  [A] loading done
+  [scheduler] using 15 physical core(s) on NUMA node 0
+
+  Workload: MIXED      
+  ------------------------------------------------
+  Write time  (no DVI)  : 5636.33 ms
+  Write time  (DVI)     : 5468.23 ms
+  Write overhead        : -168.097 ms  (-2.98239 %)
+  Query time  (base)    : 54152.2 ms total
+  Query time  (opt)     : 12244.1 ms total
+  Query benefit         : 41908.1 ms total  (77.3895 %)
+  Break-even ratio      : write overhead unmeasurably small
+
+
+========================================================
+  E2E DVI Benchmark — Q82 Break-Even Summary
+  Scale factor : 1   1000 batches × 1 ops   1000 query runs
+========================================================
+  Workload       Break-even ratio (ops per query)
+  ---------      ------------------------
+  INSERT_ONLY   ~179
+  UPDATE_ONLY   ~1928
+  DELETE_ONLY   ~399
+  MIXED         overhead negligible
+========================================================
+workload,batches,scale_factor,ops_no_dvi_ms,ops_dvi_ms,overhead_ms,overhead_pct,query_base_ms,query_opt_ms,benefit_ms,benefit_pct,break_even_ratio
+INSERT_ONLY,1000,1,1330.09,1502.41,172.32,12.9556,43136.1,12212.9,30923.2,71.6876,179.452
+UPDATE_ONLY,1000,1,2964.29,2984.03,19.7404,0.665939,50316.3,12246.4,38069.9,75.6611,1928.53
+DELETE_ONLY,1000,1,1747.07,1828.88,81.8113,4.68278,44797.1,12121.5,32675.6,72.9413,399.402
+MIXED,1000,1,5636.33,5468.23,-168.097,-2.98239,54152.2,12244.1,41908.1,77.3895,0
+Results appended to: /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/results.csv
+
+======================================================================
+  Done.
+  Results : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/results.csv
+  Meta    : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/meta.txt
+  Log     : /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/run.log
+  Plot    :
+    python3 scripts/e2e/plot_e2e.py \
+      --input /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/results.csv \
+      --outdir /home/Jonas.Baltruschat/hyrise/dvi_benchmarks/results/e2e/20260422_014553/plots
+======================================================================

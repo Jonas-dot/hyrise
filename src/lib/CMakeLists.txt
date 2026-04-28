@@ -481,6 +481,8 @@ set(
     storage/frame_of_reference_segment/frame_of_reference_segment_iterable.hpp
     storage/index/abstract_chunk_index.cpp
     storage/index/abstract_chunk_index.hpp
+    storage/index/b_tree/b_tree_olc_index.cpp
+    storage/index/b_tree/b_tree_olc_index.hpp
     storage/index/adaptive_radix_tree/adaptive_radix_tree_index.cpp
     storage/index/adaptive_radix_tree/adaptive_radix_tree_index.hpp
     storage/index/adaptive_radix_tree/adaptive_radix_tree_nodes.cpp

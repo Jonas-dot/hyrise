@@ -1,0 +1,23 @@
+# Build directories
+build/
+build_*/
+cmake-build-*/
+cmake-build-release/
+cmake-build-debug/
+
+# Results (optional - keep or track as needed)
+# results/
+
+# Editor
+.vscode/
+.idea/
+*.sublime-*
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.o
+*.a
+*.so
+*.dylib

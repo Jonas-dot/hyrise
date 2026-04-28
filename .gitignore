@@ -2,6 +2,7 @@ obj/*
 .DS_STORE
 build/*
 build-*/*
+build_*/*
 *.make
 Makefile*
 coverage*
@@ -35,6 +36,9 @@ version.hpp
 
 # CLion cmake directory
 cmake-build-*
+
+# VS Code CMake Tools test-discovery files
+cmake_test_discovery_*.json
 
 # llvm coverage information
 default.profdata

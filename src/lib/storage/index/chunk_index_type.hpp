@@ -12,19 +12,21 @@ namespace hyrise {
 
 namespace hana = boost::hana;
 
-enum class ChunkIndexType : uint8_t { GroupKey, CompositeGroupKey, AdaptiveRadixTree };
+enum class ChunkIndexType : uint8_t { GroupKey, CompositeGroupKey, AdaptiveRadixTree, BTreeOLC };
 
 class GroupKeyIndex;
 class CompositeGroupKeyIndex;
 class AdaptiveRadixTreeIndex;
 class PartialHashIndex;
+class BTreeOLCIndex;
 
 namespace detail {
 
 constexpr auto chunk_index_map =
     hana::make_map(hana::make_pair(hana::type_c<GroupKeyIndex>, ChunkIndexType::GroupKey),
                    hana::make_pair(hana::type_c<CompositeGroupKeyIndex>, ChunkIndexType::CompositeGroupKey),
-                   hana::make_pair(hana::type_c<AdaptiveRadixTreeIndex>, ChunkIndexType::AdaptiveRadixTree));
+                   hana::make_pair(hana::type_c<AdaptiveRadixTreeIndex>, ChunkIndexType::AdaptiveRadixTree),
+                   hana::make_pair(hana::type_c<BTreeOLCIndex>, ChunkIndexType::BTreeOLC));
 
 }  // namespace detail
 

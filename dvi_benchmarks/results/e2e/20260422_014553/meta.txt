@@ -1,0 +1,9 @@
+benchmark=e2e
+timestamp=20260422_014553
+git_hash=57a56a3a
+host=sidon
+os=Linux 6.8.0-100-generic x86_64
+binary=/home/Jonas.Baltruschat/hyrise/build_release/hyriseBenchmarkDVIndexE2E
+batches=1000
+scale_factor=1
+iterations=3

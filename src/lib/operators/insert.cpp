@@ -13,6 +13,7 @@
 #include "operators/abstract_operator.hpp"
 #include "resolve_type.hpp"
 #include "storage/abstract_segment.hpp"
+#include "storage/index/b_tree/b_tree_olc_index.hpp"
 #include "storage/mvcc_data.hpp"
 #include "storage/segment_iterate.hpp"
 #include "storage/value_segment.hpp"
@@ -273,6 +274,49 @@ void Insert::_on_commit_records(const CommitID cid) {
     // This fence ensures that changes to the TIDs (which are not sequentially consistent) are visible to other threads.
     std::atomic_thread_fence(std::memory_order_release);
     deregister_insert(_target_table, target_chunk_range.chunk_id, target_chunk, mvcc_data);
+
+    // Notify ALL table-level validation dependency indexes (if any) about the newly committed rows.
+    for (const auto& dep : _target_table->dependency_validators()) {
+      std::vector<std::shared_ptr<const AbstractSegment>> lhs_segments;
+      std::vector<std::shared_ptr<const AbstractSegment>> rhs_segments;
+      lhs_segments.reserve(dep.lhs_column_ids.empty() ? 1u : dep.lhs_column_ids.size());
+      rhs_segments.reserve(dep.rhs_column_ids.empty() ? 1u : dep.rhs_column_ids.size());
+
+      if (dep.lhs_column_ids.empty()) {
+        lhs_segments.emplace_back(target_chunk->get_segment(dep.lhs_column_id));
+      } else {
+        for (const auto lhs_column_id : dep.lhs_column_ids) {
+          lhs_segments.emplace_back(target_chunk->get_segment(lhs_column_id));
+        }
+      }
+
+      if (dep.rhs_column_ids.empty()) {
+        rhs_segments.emplace_back(target_chunk->get_segment(dep.rhs_column_id));
+      } else {
+        for (const auto rhs_column_id : dep.rhs_column_ids) {
+          rhs_segments.emplace_back(target_chunk->get_segment(rhs_column_id));
+        }
+      }
+
+      for (auto chunk_offset = target_chunk_range.begin_chunk_offset;
+           chunk_offset < target_chunk_range.end_chunk_offset; ++chunk_offset) {
+        std::vector<AllTypeVariant> lhs_values;
+        std::vector<AllTypeVariant> rhs_values;
+        lhs_values.reserve(lhs_segments.size());
+        rhs_values.reserve(rhs_segments.size());
+
+        for (const auto& lhs_segment : lhs_segments) {
+          lhs_values.emplace_back((*lhs_segment)[chunk_offset]);
+        }
+        for (const auto& rhs_segment : rhs_segments) {
+          rhs_values.emplace_back((*rhs_segment)[chunk_offset]);
+        }
+
+        dep.index->insert_entry_for_validation(
+            lhs_values, rhs_values, dep.dependency_type, cid,
+            Hyrise::get().transaction_manager.get_lowest_active_snapshot_commit_id());
+      }
+    }
   }
 }
 

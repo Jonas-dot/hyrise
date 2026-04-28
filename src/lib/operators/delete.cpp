@@ -5,11 +5,13 @@
 #include <unordered_map>
 
 #include "all_type_variant.hpp"
+#include "hyrise.hpp"
 #include "concurrency/transaction_context.hpp"
 #include "operators/abstract_operator.hpp"
 #include "operators/validate.hpp"
 #include "statistics/table_statistics.hpp"
 #include "storage/chunk.hpp"
+#include "storage/index/b_tree/b_tree_olc_index.hpp"
 #include "storage/mvcc_data.hpp"
 #include "storage/pos_lists/abstract_pos_list.hpp"
 #include "storage/reference_segment.hpp"
@@ -148,6 +150,56 @@ void Delete::_on_commit_records(const CommitID commit_id) {
       commit_with_pos_list<true>(referenced_table, pos_list, commit_id);
     } else {
       commit_with_pos_list<false>(referenced_table, pos_list, commit_id);
+    }
+
+    // Notify ALL table-level validation dependency indexes (if any) about the deleted rows.
+    for (const auto& dep : referenced_table->dependency_validators()) {
+      for (const auto row_id : pos_list) {
+        if (row_id.is_null()) {
+          continue;
+        }
+        const auto& referenced_chunk = referenced_table->get_chunk(row_id.chunk_id);
+        if (!referenced_chunk) {
+          continue;
+        }
+
+        std::vector<std::shared_ptr<const AbstractSegment>> lhs_segments;
+        std::vector<std::shared_ptr<const AbstractSegment>> rhs_segments;
+        lhs_segments.reserve(dep.lhs_column_ids.empty() ? 1u : dep.lhs_column_ids.size());
+        rhs_segments.reserve(dep.rhs_column_ids.empty() ? 1u : dep.rhs_column_ids.size());
+
+        if (dep.lhs_column_ids.empty()) {
+          lhs_segments.emplace_back(referenced_chunk->get_segment(dep.lhs_column_id));
+        } else {
+          for (const auto lhs_column_id : dep.lhs_column_ids) {
+            lhs_segments.emplace_back(referenced_chunk->get_segment(lhs_column_id));
+          }
+        }
+
+        if (dep.rhs_column_ids.empty()) {
+          rhs_segments.emplace_back(referenced_chunk->get_segment(dep.rhs_column_id));
+        } else {
+          for (const auto rhs_column_id : dep.rhs_column_ids) {
+            rhs_segments.emplace_back(referenced_chunk->get_segment(rhs_column_id));
+          }
+        }
+
+        std::vector<AllTypeVariant> lhs_values;
+        std::vector<AllTypeVariant> rhs_values;
+        lhs_values.reserve(lhs_segments.size());
+        rhs_values.reserve(rhs_segments.size());
+
+        for (const auto& lhs_segment : lhs_segments) {
+          lhs_values.emplace_back((*lhs_segment)[row_id.chunk_offset]);
+        }
+        for (const auto& rhs_segment : rhs_segments) {
+          rhs_values.emplace_back((*rhs_segment)[row_id.chunk_offset]);
+        }
+
+        dep.index->delete_entry_for_validation(
+            lhs_values, rhs_values, dep.dependency_type, commit_id,
+            Hyrise::get().transaction_manager.get_lowest_active_snapshot_commit_id());
+      }
     }
   }
 }

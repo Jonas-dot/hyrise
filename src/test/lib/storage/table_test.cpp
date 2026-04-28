@@ -343,4 +343,40 @@ TEST_F(StorageTableTest, CreatePartialHashIndexOnEmptyChunks) {
   EXPECT_THROW(table->create_partial_hash_index(ColumnID{0}, {}), std::logic_error);
 }
 
+TEST_F(StorageTableTest, RegisterSingleColumnDependencyValidator) {
+  table->set_dependency_validator(ColumnID{0}, ColumnID{1}, DependencyType::FD);
+
+  const auto& deps = table->dependency_validators();
+  ASSERT_EQ(deps.size(), 1u);
+  EXPECT_EQ(deps[0].lhs_column_id, ColumnID{0});
+  EXPECT_EQ(deps[0].rhs_column_id, ColumnID{1});
+  ASSERT_EQ(deps[0].lhs_column_ids.size(), 1u);
+  ASSERT_EQ(deps[0].rhs_column_ids.size(), 1u);
+  EXPECT_EQ(deps[0].lhs_column_ids[0], ColumnID{0});
+  EXPECT_EQ(deps[0].rhs_column_ids[0], ColumnID{1});
+  EXPECT_EQ(deps[0].dependency_type, DependencyType::FD);
+}
+
+TEST_F(StorageTableTest, RegisterMultiColumnDependencyValidator) {
+  TableColumnDefinitions multi_column_definitions{{"a", DataType::Int, false},
+                                                  {"b", DataType::Int, false},
+                                                  {"c", DataType::Int, false},
+                                                  {"d", DataType::Int, false}};
+  table = std::make_shared<Table>(multi_column_definitions, TableType::Data, ChunkOffset{2});
+
+  table->set_dependency_validator({ColumnID{0}, ColumnID{1}}, {ColumnID{2}, ColumnID{3}}, DependencyType::OD);
+
+  const auto& deps = table->dependency_validators();
+  ASSERT_EQ(deps.size(), 1u);
+  EXPECT_EQ(deps[0].lhs_column_id, ColumnID{0});
+  EXPECT_EQ(deps[0].rhs_column_id, ColumnID{2});
+  ASSERT_EQ(deps[0].lhs_column_ids.size(), 2u);
+  ASSERT_EQ(deps[0].rhs_column_ids.size(), 2u);
+  EXPECT_EQ(deps[0].lhs_column_ids[0], ColumnID{0});
+  EXPECT_EQ(deps[0].lhs_column_ids[1], ColumnID{1});
+  EXPECT_EQ(deps[0].rhs_column_ids[0], ColumnID{2});
+  EXPECT_EQ(deps[0].rhs_column_ids[1], ColumnID{3});
+  EXPECT_EQ(deps[0].dependency_type, DependencyType::OD);
+}
+
 }  // namespace hyrise

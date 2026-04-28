@@ -413,6 +413,42 @@ void Table::set_table_statistics(const std::shared_ptr<TableStatistics>& table_s
   _table_statistics = table_statistics;
 }
 
+void Table::set_dependency_validator(const ColumnID lhs_col, const ColumnID rhs_col, const DependencyType dep_type) {
+  set_dependency_validator(std::vector<ColumnID>{lhs_col}, std::vector<ColumnID>{rhs_col}, dep_type);
+}
+
+void Table::set_dependency_validator(const std::vector<ColumnID>& lhs_cols, const std::vector<ColumnID>& rhs_cols,
+                                     const DependencyType dep_type) {
+  Assert(!lhs_cols.empty(), "lhs_cols must not be empty");
+  Assert(!rhs_cols.empty(), "rhs_cols must not be empty");
+  for (const auto lhs_col : lhs_cols) {
+    Assert(lhs_col < column_count(), "lhs_col out of range");
+  }
+  for (const auto rhs_col : rhs_cols) {
+    Assert(rhs_col < column_count(), "rhs_col out of range");
+  }
+
+  // Build a tiny dummy segment just to satisfy the BTreeOLCIndex constructor; the index itself is used exclusively for
+  // validation (insert_entry_for_validation / delete_entry_for_validation), not for lookup.
+  auto dummy_segment = std::make_shared<ValueSegment<int32_t>>();
+  _validation_dependencies.push_back(ValidationDependency{
+      .index = std::make_shared<BTreeOLCIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{dummy_segment}),
+      .lhs_column_id = lhs_cols.front(),
+      .rhs_column_id = rhs_cols.front(),
+      .lhs_column_ids = lhs_cols,
+      .rhs_column_ids = rhs_cols,
+      .dependency_type = dep_type,
+  });
+}
+
+const std::vector<Table::ValidationDependency>& Table::dependency_validators() const {
+  return _validation_dependencies;
+}
+
+void Table::attach_dependency_validator(const ValidationDependency& vd) {
+  _validation_dependencies.push_back(vd);
+}
+
 std::vector<ChunkIndexStatistics> Table::chunk_indexes_statistics() const {
   return _chunk_indexes_statistics;
 }
