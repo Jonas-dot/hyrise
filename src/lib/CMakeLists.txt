@@ -770,6 +770,7 @@ target_link_libraries_system(
     ${BOOST_LIBS}
     concurrentqueue
     cxxopts
+    dv_tree
     nlohmann_json::nlohmann_json
     sparse_map
     SQLite::SQLite3

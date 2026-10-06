@@ -329,3 +329,20 @@ externalproject_add_step(
   DEPENDS "${SSB_DBGEN_FILES}"
   COMMAND bash -c "(cd ${CMAKE_CURRENT_BINARY_DIR}/ssb-dbgen && make distclean >/dev/null 2>/dev/null) || true"
 )
+
+
+# Build the DV-Tree core (dependency validation index). It is compiled against Hyrise's types.hpp instead of the
+# standalone shim, so CommitID is Hyrise's type.
+set(DV_TREE_DIR dv_tree/src/storage/dependency_validation)
+add_library(dv_tree STATIC
+    ${DV_TREE_DIR}/dv_tree.cpp
+    ${DV_TREE_DIR}/dv_types.cpp
+    ${DV_TREE_DIR}/key_normalization.cpp
+    ${DV_TREE_DIR}/btree/btree_adapter.cpp
+    ${DV_TREE_DIR}/btree/btree24/btree_olc.cpp
+)
+target_include_directories(dv_tree PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/dv_tree/src)
+target_include_directories(dv_tree PRIVATE ${PROJECT_SOURCE_DIR}/src/lib)
+target_link_libraries(dv_tree PRIVATE Boost::headers)
+target_compile_features(dv_tree PUBLIC cxx_std_23)
+set_target_properties(dv_tree PROPERTIES POSITION_INDEPENDENT_CODE ON)
