@@ -3,6 +3,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <mutex>
 
 #include "types.hpp"
 
@@ -27,9 +28,18 @@ class CommitContext : private Noncopyable {
    * Marks the commit context as “pending”, i.e. ready to be committed
    * as soon as all previous pending have been committed.
    *
-   * @param callback called when transaction is committed
+   * @param callback called after the transaction's CID becomes globally visible
+   * @param prepublication_callback called exactly once before the CID becomes
+   * globally visible; concurrent callers wait for its completion
    */
-  void make_pending(const TransactionID transaction_id, const std::function<void(TransactionID)>& callback = nullptr);
+  void make_pending(const TransactionID transaction_id, const std::function<void(TransactionID)>& callback = nullptr,
+                    const std::function<void()>& prepublication_callback = nullptr);
+
+  /**
+   * Completes metadata publication that has to precede the global CID
+   * watermark. May be called concurrently, but invokes the callback once.
+   */
+  void fire_prepublication_callback();
 
   /**
    * Calls the callback of make_pending
@@ -52,6 +62,8 @@ class CommitContext : private Noncopyable {
   const CommitID _commit_id;
   std::atomic_bool _pending;  // true if context is waiting to be committed
   std::shared_ptr<CommitContext> _next;
+  std::once_flag _prepublication_once;
+  std::function<void()> _prepublication_callback;
   std::function<void()> _callback;
 };
 }  // namespace hyrise

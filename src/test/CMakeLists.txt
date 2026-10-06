@@ -188,6 +188,13 @@ set(
     lib/storage/constraints/foreign_key_constraint_test.cpp
     lib/storage/constraints/table_key_constraint_test.cpp
     lib/storage/constraints/table_order_constraint_test.cpp
+    lib/storage/dependency_validation/hyrise_value_normalization_test.cpp
+    lib/storage/dependency_validation/dependency_validation_write_set_test.cpp
+    lib/storage/dependency_validation/dependency_validation_bootstrap_test.cpp
+    lib/storage/dependency_validation/dependency_validation_commit_coordinator_test.cpp
+    lib/storage/dependency_validation/dependency_validator_test.cpp
+    lib/storage/dependency_validation/dependency_validation_mvcc_end_to_end_test.cpp
+    lib/storage/dependency_validation/dependency_validation_commit_pause_test.cpp
     lib/storage/dictionary_segment_test.cpp
     lib/storage/encoded_segment_test.cpp
     lib/storage/encoded_string_segment_test.cpp
@@ -329,3 +336,63 @@ target_link_libraries_system(hyriseSystemTest pqxx)
 target_compile_options(hyriseSystemTest PRIVATE -DPQXX_HIDE_EXP_OPTIONAL)
 # Discover tests by running the hyriseSystemTest binary with the --gtest_list_tests flag. Increase the timeout to 30 seconds as the default is not enough.
 gtest_discover_tests(hyriseSystemTest WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} TEST_PREFIX hyriseSystemTest/ DISCOVERY_TIMEOUT 60)
+
+# Keep the imported standalone DV-Tree regression suites as isolated executables
+# during the integration phases. They deliberately use white-box hooks and their
+# small original test harness. Hyrise-facing lifecycle tests are added to
+# hyriseTest separately as the corresponding integration phases are implemented.
+# The concurrency suite links the platform threading library directly, so ensure
+# the imported Threads::Threads target exists.
+find_package(Threads REQUIRED)
+
+set(
+    DV_TREE_REGRESSION_SOURCES
+    ${PROJECT_SOURCE_DIR}/src/lib/storage/dependency_validation/btree/btree_adapter.cpp
+    ${PROJECT_SOURCE_DIR}/src/lib/storage/dependency_validation/btree/tum_btree/btree.cpp
+    ${PROJECT_SOURCE_DIR}/src/lib/storage/dependency_validation/dv_tree.cpp
+    ${PROJECT_SOURCE_DIR}/src/lib/storage/dependency_validation/dv_types.cpp
+    ${PROJECT_SOURCE_DIR}/src/lib/storage/dependency_validation/key_normalization.cpp
+)
+
+add_executable(
+    hyriseDVTreeUnitTest
+    lib/storage/dependency_validation/unit/public_header_compatibility.cpp
+    lib/storage/dependency_validation/unit/public_api_smoke.cpp
+    lib/storage/dependency_validation/unit/unit_tests.cpp
+    ${DV_TREE_REGRESSION_SOURCES}
+)
+target_compile_definitions(hyriseDVTreeUnitTest PRIVATE DV_TESTING)
+target_include_directories(
+    hyriseDVTreeUnitTest
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/storage/dependency_validation/hyrise_type_stubs
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/storage/dependency_validation
+    ${PROJECT_SOURCE_DIR}/src/lib
+)
+# dv_types.hpp uses Hyrise's StrongTypedef and therefore Boost headers. Link the
+# same imported Boost targets as the regular Hyrise test binary so their include
+# directories propagate to this standalone-derived regression target.
+target_link_libraries(hyriseDVTreeUnitTest PRIVATE Threads::Threads ${BOOST_LIBS})
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES ".*Clang")
+    target_compile_options(hyriseDVTreeUnitTest PRIVATE -Wno-thread-safety-negative)
+endif()
+add_test(NAME hyriseDVTreeUnitTest COMMAND hyriseDVTreeUnitTest)
+
+add_executable(
+    hyriseDVTreeConcurrencyTest
+    lib/storage/dependency_validation/concurrency/concurrency_tests.cpp
+    ${DV_TREE_REGRESSION_SOURCES}
+)
+target_compile_definitions(hyriseDVTreeConcurrencyTest PRIVATE DV_TESTING)
+target_include_directories(
+    hyriseDVTreeConcurrencyTest
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/storage/dependency_validation/hyrise_type_stubs
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/storage/dependency_validation
+    ${PROJECT_SOURCE_DIR}/src/lib
+)
+target_link_libraries(hyriseDVTreeConcurrencyTest PRIVATE Threads::Threads ${BOOST_LIBS})
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES ".*Clang")
+    target_compile_options(hyriseDVTreeConcurrencyTest PRIVATE -Wno-thread-safety-negative)
+endif()
+add_test(NAME hyriseDVTreeConcurrencyTest COMMAND hyriseDVTreeConcurrencyTest)

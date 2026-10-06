@@ -3,6 +3,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "types.hpp"
@@ -11,6 +12,13 @@ namespace hyrise {
 
 class AbstractReadWriteOperator;
 class CommitContext;
+class Table;
+
+namespace dv_tree {
+class DVTree;
+class DependencyValidationCommit;
+class DependencyValidationWriteSet;
+}  // namespace dv_tree
 
 /**
  * @brief Overview of the different transaction phases
@@ -134,6 +142,19 @@ class TransactionContext : public std::enable_shared_from_this<TransactionContex
     return _read_write_operators;
   }
 
+  // Stage already-normalized dependency changes while this transaction is
+  // active. Operators use these narrow methods after Phase 7 materializes the
+  // affected row values. No CID is reserved and no DVTree is changed here.
+  void stage_dependency_insert(std::shared_ptr<const Table> table, std::shared_ptr<dv_tree::DVTree> tree,
+                               std::string dependency_name, std::string lhs_norm, std::string rhs_norm);
+  void stage_dependency_remove(std::shared_ptr<const Table> table, std::shared_ptr<dv_tree::DVTree> tree,
+                               std::string dependency_name, std::string lhs_norm, std::string rhs_norm);
+  void stage_dependency_update(std::shared_ptr<const Table> table, std::shared_ptr<dv_tree::DVTree> tree,
+                               std::string dependency_name, std::string lhs_norm, std::string old_rhs_norm,
+                               std::string new_rhs_norm);
+
+  const dv_tree::DependencyValidationWriteSet* dependency_validation_write_set() const;
+
   /**
    * @defgroup Update the counter of active operators
    * @{
@@ -150,6 +171,11 @@ class TransactionContext : public std::enable_shared_from_this<TransactionContex
   bool is_auto_commit();
 
  private:
+  // TransactionManager uses this overload after atomically selecting and
+  // registering the snapshot under its active-snapshot mutex.
+  TransactionContext(TransactionID transaction_id, CommitID snapshot_commit_id, AutoCommit is_auto_commit,
+                     bool snapshot_already_registered);
+
   /**
    * @defgroup Lifetime management
    * @{
@@ -186,6 +212,11 @@ class TransactionContext : public std::enable_shared_from_this<TransactionContex
    */
   void _mark_as_pending_and_try_commit(const std::function<void(TransactionID)>& callback);
 
+  // Retire a CID that failed during DV preparation, before any operator has
+  // written row CIDs. The normal commit chain must still see the CID as pending
+  // or all later commits would wait forever.
+  void _retire_failed_commit_after_cid();
+
   /**@}*/
 
   void _wait_for_active_operators_to_finish() const;
@@ -201,6 +232,9 @@ class TransactionContext : public std::enable_shared_from_this<TransactionContex
   const AutoCommit _is_auto_commit;
 
   std::vector<std::shared_ptr<AbstractReadWriteOperator>> _read_write_operators;
+  std::unique_ptr<dv_tree::DependencyValidationWriteSet> _dependency_validation_write_set;
+  std::unique_ptr<dv_tree::DependencyValidationCommit> _dependency_validation_commit;
+  bool _commit_failed_after_cid = false;
 
   std::atomic<TransactionPhase> _phase;
   std::shared_ptr<CommitContext> _commit_context;

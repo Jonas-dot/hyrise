@@ -43,4 +43,24 @@ TEST_F(CommitContextTest, TrySetNextFailsIfNotNullptr) {
   EXPECT_FALSE(context->try_set_next(next_context));
 }
 
+TEST_F(CommitContextTest, PrepublicationCallbackFiresExactlyOnceBeforeCommitCallback) {
+  auto context = std::make_unique<CommitContext>(CommitID{1});
+  auto events = std::vector<std::string>{};
+
+  context->make_pending(
+      TransactionID{1},
+      [&events](const TransactionID /*transaction_id*/) {
+        events.emplace_back("committed");
+      },
+      [&events] {
+        events.emplace_back("prepublication");
+      });
+
+  context->fire_prepublication_callback();
+  context->fire_prepublication_callback();
+  context->fire_callback();
+
+  EXPECT_EQ(events, (std::vector<std::string>{"prepublication", "committed"}));
+}
+
 }  // namespace hyrise

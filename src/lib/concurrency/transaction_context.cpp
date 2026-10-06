@@ -1,5 +1,6 @@
 #include "transaction_context.hpp"
 
+#include <exception>
 #include <functional>
 #include <future>
 #include <memory>
@@ -9,6 +10,9 @@
 #include "commit_context.hpp"  // IWYU pragma: keep
 #include "hyrise.hpp"
 #include "operators/abstract_read_write_operator.hpp"
+#include "storage/dependency_validation/dependency_validation_commit_coordinator.hpp"
+#include "storage/dependency_validation/dependency_validation_test_hooks.hpp"
+#include "storage/dependency_validation/dependency_validation_write_set.hpp"
 #include "types.hpp"
 #include "utils/assert.hpp"
 
@@ -16,12 +20,18 @@ namespace hyrise {
 
 TransactionContext::TransactionContext(const TransactionID transaction_id, const CommitID snapshot_commit_id,
                                        const AutoCommit is_auto_commit)
+    : TransactionContext{transaction_id, snapshot_commit_id, is_auto_commit, false} {}
+
+TransactionContext::TransactionContext(const TransactionID transaction_id, const CommitID snapshot_commit_id,
+                                       const AutoCommit is_auto_commit, const bool snapshot_already_registered)
     : _transaction_id{transaction_id},
       _snapshot_commit_id{snapshot_commit_id},
       _is_auto_commit{is_auto_commit},
       _phase{TransactionPhase::Active},
       _num_active_operators{0} {
-  Hyrise::get().transaction_manager._register_transaction(snapshot_commit_id);
+  if (!snapshot_already_registered) {
+    Hyrise::get().transaction_manager._register_transaction(snapshot_commit_id);
+  }
 }
 
 TransactionContext::~TransactionContext() {
@@ -88,17 +98,74 @@ void TransactionContext::rollback(RollbackReason rollback_reason) {
     op->rollback_records();
   }
 
+  // Rollback happens before a DV CID/ticket exists in Phase 6. Discarding the
+  // transaction-local write set therefore cannot leave an index reservation.
+  _dependency_validation_write_set.reset();
+
   _mark_as_rolled_back(rollback_reason);
 }
 
 void TransactionContext::commit_async(const std::function<void(TransactionID)>& callback) {
   _prepare_commit();
 
+  dv_tree::CommitPauseHooks::notify(dv_tree::CommitPausePoint::EffectsInstalledRowsNotCommitted,
+                                    _commit_context->commit_id());
+
   for (const auto& op : _read_write_operators) {
     op->commit_records(commit_id());
   }
 
+  dv_tree::CommitPauseHooks::notify(dv_tree::CommitPausePoint::RowsCommittedContextNotPending,
+                                    _commit_context->commit_id());
+
   _mark_as_pending_and_try_commit(callback);
+}
+
+void TransactionContext::stage_dependency_insert(std::shared_ptr<const Table> table,
+                                                 std::shared_ptr<dv_tree::DVTree> tree, std::string dependency_name,
+                                                 std::string lhs_norm, std::string rhs_norm) {
+  Assert(_phase == TransactionPhase::Active, "Dependency changes can only be staged by an active transaction.");
+  if (!_dependency_validation_write_set) {
+    _dependency_validation_write_set = std::make_unique<dv_tree::DependencyValidationWriteSet>();
+  }
+  _dependency_validation_write_set->insert(std::move(table), std::move(tree), std::move(dependency_name),
+                                           std::move(lhs_norm), std::move(rhs_norm));
+  if (_dependency_validation_write_set->empty()) {
+    _dependency_validation_write_set.reset();
+  }
+}
+
+void TransactionContext::stage_dependency_remove(std::shared_ptr<const Table> table,
+                                                 std::shared_ptr<dv_tree::DVTree> tree, std::string dependency_name,
+                                                 std::string lhs_norm, std::string rhs_norm) {
+  Assert(_phase == TransactionPhase::Active, "Dependency changes can only be staged by an active transaction.");
+  if (!_dependency_validation_write_set) {
+    _dependency_validation_write_set = std::make_unique<dv_tree::DependencyValidationWriteSet>();
+  }
+  _dependency_validation_write_set->remove(std::move(table), std::move(tree), std::move(dependency_name),
+                                           std::move(lhs_norm), std::move(rhs_norm));
+  if (_dependency_validation_write_set->empty()) {
+    _dependency_validation_write_set.reset();
+  }
+}
+
+void TransactionContext::stage_dependency_update(std::shared_ptr<const Table> table,
+                                                 std::shared_ptr<dv_tree::DVTree> tree, std::string dependency_name,
+                                                 std::string lhs_norm, std::string old_rhs_norm,
+                                                 std::string new_rhs_norm) {
+  Assert(_phase == TransactionPhase::Active, "Dependency changes can only be staged by an active transaction.");
+  if (!_dependency_validation_write_set) {
+    _dependency_validation_write_set = std::make_unique<dv_tree::DependencyValidationWriteSet>();
+  }
+  _dependency_validation_write_set->update(std::move(table), std::move(tree), std::move(dependency_name),
+                                           std::move(lhs_norm), std::move(old_rhs_norm), std::move(new_rhs_norm));
+  if (_dependency_validation_write_set->empty()) {
+    _dependency_validation_write_set.reset();
+  }
+}
+
+const dv_tree::DependencyValidationWriteSet* TransactionContext::dependency_validation_write_set() const {
+  return _dependency_validation_write_set.get();
 }
 
 void TransactionContext::commit() {
@@ -155,28 +222,91 @@ void TransactionContext::_prepare_commit() {
   _wait_for_active_operators_to_finish();
 
   _commit_context = Hyrise::get().transaction_manager._new_commit_context();
+  dv_tree::CommitPauseHooks::notify(dv_tree::CommitPausePoint::CidAssignedFootprintNotRegistered,
+                                    _commit_context->commit_id());
+  try {
+    _dependency_validation_commit = Hyrise::get().transaction_manager._register_dependency_validation_commit(
+        _commit_context->commit_id(), _dependency_validation_write_set.get());
+
+    dv_tree::CommitPauseHooks::notify(dv_tree::CommitPausePoint::FootprintRegisteredPreparationNotStarted,
+                                      _commit_context->commit_id());
+
+    // All tickets are registered before any one is awaited. The waits happen
+    // outside the coordinator and complete the private DV installation before
+    // row MVCC CIDs are written by commit_records().
+    if (_dependency_validation_commit) {
+      _dependency_validation_commit->seal_and_wait_until_applied();
+    }
+  } catch (...) {
+    // A ticket that has already begun installation cannot be rolled back
+    // safely. Publishing the row changes without matching DV effects would be
+    // corrupt, so fail loudly instead of continuing in-process.
+    if (_dependency_validation_commit && !_dependency_validation_commit->abort_before_row_commit()) {
+      std::terminate();
+    }
+    _retire_failed_commit_after_cid();
+    throw;
+  }
 }
 
 void TransactionContext::_mark_as_pending_and_try_commit(const std::function<void(TransactionID)>& callback) {
   if constexpr (HYRISE_DEBUG) {
     for (const auto& op : _read_write_operators) {
-      Assert(op->state() == ReadWriteOperatorState::Committed, "All read/write operators must have been committed.");
+      const auto expected_state =
+          _commit_failed_after_cid ? ReadWriteOperatorState::RolledBack : ReadWriteOperatorState::Committed;
+      Assert(op->state() == expected_state, "Unexpected read-write operator state while publishing a commit context.");
     }
   }
 
   auto context_weak_ptr = std::weak_ptr<TransactionContext>{this->shared_from_this()};
-  _commit_context->make_pending(_transaction_id, [context_weak_ptr, callback](auto transaction_id) {
-    // If the transaction context still exists, set its phase to Committed.
-    if (auto context_ptr = context_weak_ptr.lock()) {
-      context_ptr->_transition(TransactionPhase::Committing, TransactionPhase::Committed);
+  // CommitContext owns this state until ordered publication. DV visibility
+  // must not depend on the initiating TransactionContext remaining alive.
+  auto dependency_validation_commit =
+      std::shared_ptr<dv_tree::DependencyValidationCommit>{std::move(_dependency_validation_commit)};
+  const auto publish_dependency_visibility = [dependency_validation_commit] {
+    if (dependency_validation_commit) {
+      dependency_validation_commit->publish_visibility();
     }
+  };
+  _commit_context->make_pending(
+      _transaction_id,
+      [context_weak_ptr, callback](auto transaction_id) {
+        // If the transaction context still exists, set its phase to Committed.
+        if (auto context_ptr = context_weak_ptr.lock()) {
+          context_ptr->_transition(TransactionPhase::Committing, context_ptr->_commit_failed_after_cid
+                                                                     ? TransactionPhase::RolledBackAfterConflict
+                                                                     : TransactionPhase::Committed);
+        }
 
-    if (callback) {
-      callback(transaction_id);
-    }
-  });
+        if (callback) {
+          callback(transaction_id);
+        }
+      },
+      publish_dependency_visibility);
 
   Hyrise::get().transaction_manager._try_increment_last_commit_id(_commit_context);
+
+  // Pending but not yet published means a lower CID has not published; neither
+  // this commit's rows nor its DV metadata may be visible yet.
+  if (Hyrise::get().transaction_manager.last_commit_id() < _commit_context->commit_id()) {
+    dv_tree::CommitPauseHooks::notify(dv_tree::CommitPausePoint::ContextPendingBehindLowerCid,
+                                      _commit_context->commit_id());
+  }
+}
+
+void TransactionContext::_retire_failed_commit_after_cid() {
+  _commit_failed_after_cid = true;
+  _dependency_validation_commit.reset();
+  _dependency_validation_write_set.reset();
+
+  for (const auto& op : _read_write_operators) {
+    op->rollback_records();
+  }
+
+  // No operator commit_records() has run. Making this CID pending retires it
+  // from Hyrise's ordered chain, and the callback changes the context into the
+  // conflict-style rollback state once all lower CIDs have been published.
+  _mark_as_pending_and_try_commit({});
 }
 
 void TransactionContext::on_operator_started() {

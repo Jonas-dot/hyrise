@@ -344,17 +344,22 @@ TEST_F(StorageTableTest, CreatePartialHashIndexOnEmptyChunks) {
 }
 
 TEST_F(StorageTableTest, RegisterSingleColumnDependencyValidator) {
-  table->set_dependency_validator(ColumnID{0}, ColumnID{1}, DependencyType::FD);
+  table->set_dependency_validator(ColumnID{0}, ColumnID{1}, dv_tree::DependencyKind::FD);
 
-  const auto& deps = table->dependency_validators();
+  const auto deps = table->dependency_validation_api();
   ASSERT_EQ(deps.size(), 1u);
-  EXPECT_EQ(deps[0].lhs_column_id, ColumnID{0});
-  EXPECT_EQ(deps[0].rhs_column_id, ColumnID{1});
-  ASSERT_EQ(deps[0].lhs_column_ids.size(), 1u);
-  ASSERT_EQ(deps[0].rhs_column_ids.size(), 1u);
-  EXPECT_EQ(deps[0].lhs_column_ids[0], ColumnID{0});
-  EXPECT_EQ(deps[0].rhs_column_ids[0], ColumnID{1});
-  EXPECT_EQ(deps[0].dependency_type, DependencyType::FD);
+  EXPECT_EQ(deps[0].name(), "FD [0] -> [1]");
+  EXPECT_EQ(deps[0].lhs_columns(), std::vector<ColumnID>{ColumnID{0}});
+  EXPECT_EQ(deps[0].rhs_columns(), std::vector<ColumnID>{ColumnID{1}});
+  EXPECT_EQ(deps[0].kind(), dv_tree::DependencyKind::FD);
+}
+
+TEST_F(StorageTableTest, RejectEmptyValidatorRegistrationOnPopulatedTable) {
+  table->append({int32_t{1}, pmr_string{"a"}});
+
+  EXPECT_THROW(table->set_dependency_validator(ColumnID{0}, ColumnID{1}, dv_tree::DependencyKind::FD),
+               std::logic_error);
+  EXPECT_TRUE(table->dependency_validation_api().empty());
 }
 
 TEST_F(StorageTableTest, RegisterMultiColumnDependencyValidator) {
@@ -364,19 +369,25 @@ TEST_F(StorageTableTest, RegisterMultiColumnDependencyValidator) {
                                                   {"d", DataType::Int, false}};
   table = std::make_shared<Table>(multi_column_definitions, TableType::Data, ChunkOffset{2});
 
-  table->set_dependency_validator({ColumnID{0}, ColumnID{1}}, {ColumnID{2}, ColumnID{3}}, DependencyType::OD);
+  table->set_dependency_validator({ColumnID{0}, ColumnID{1}}, {ColumnID{2}, ColumnID{3}}, dv_tree::DependencyKind::OD);
 
-  const auto& deps = table->dependency_validators();
+  const auto deps = table->dependency_validation_api();
   ASSERT_EQ(deps.size(), 1u);
-  EXPECT_EQ(deps[0].lhs_column_id, ColumnID{0});
-  EXPECT_EQ(deps[0].rhs_column_id, ColumnID{2});
-  ASSERT_EQ(deps[0].lhs_column_ids.size(), 2u);
-  ASSERT_EQ(deps[0].rhs_column_ids.size(), 2u);
-  EXPECT_EQ(deps[0].lhs_column_ids[0], ColumnID{0});
-  EXPECT_EQ(deps[0].lhs_column_ids[1], ColumnID{1});
-  EXPECT_EQ(deps[0].rhs_column_ids[0], ColumnID{2});
-  EXPECT_EQ(deps[0].rhs_column_ids[1], ColumnID{3});
-  EXPECT_EQ(deps[0].dependency_type, DependencyType::OD);
+  EXPECT_EQ(deps[0].name(), "OD [0,1] -> [2,3]");
+  EXPECT_EQ(deps[0].lhs_columns(), (std::vector<ColumnID>{ColumnID{0}, ColumnID{1}}));
+  EXPECT_EQ(deps[0].rhs_columns(), (std::vector<ColumnID>{ColumnID{2}, ColumnID{3}}));
+  EXPECT_EQ(deps[0].kind(), dv_tree::DependencyKind::OD);
+}
+
+TEST_F(StorageTableTest, RejectDuplicateDependencyValidator) {
+  table->set_dependency_validator(ColumnID{0}, ColumnID{1}, dv_tree::DependencyKind::FD);
+  EXPECT_THROW(table->set_dependency_validator(ColumnID{0}, ColumnID{1}, dv_tree::DependencyKind::FD),
+               std::logic_error);
+
+  // The same columns may still legitimately express the other dependency
+  // kind; it owns an independent DV-Tree and is therefore not a duplicate.
+  EXPECT_NO_THROW(table->set_dependency_validator(ColumnID{0}, ColumnID{1}, dv_tree::DependencyKind::OD));
+  EXPECT_EQ(table->dependency_validation_api().size(), 2u);
 }
 
 }  // namespace hyrise

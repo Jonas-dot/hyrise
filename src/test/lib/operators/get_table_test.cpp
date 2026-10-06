@@ -155,6 +155,32 @@ TEST_F(OperatorsGetTableTest, PrunedColumns) {
   EXPECT_EQ(table->get_chunk(ChunkID{3})->get_indexes(column_ids_1).size(), 0);
 }
 
+TEST_F(OperatorsGetTableTest, DependencyDescriptorsFollowSafeColumnPruning) {
+  const auto dependency_table = std::make_shared<Table>(
+      TableColumnDefinitions{{"unused", DataType::Int, false},
+                             {"lhs", DataType::Int, false},
+                             {"rhs", DataType::Float, false}},
+      TableType::Data);
+  dependency_table->set_dependency_validator(ColumnID{1}, ColumnID{2}, dv_tree::DependencyKind::FD);
+  Hyrise::get().storage_manager.add_table("dependency_table", dependency_table);
+
+  const auto keeps_dependency = std::make_shared<GetTable>(
+      "dependency_table", std::vector<ChunkID>{}, std::vector<ColumnID>{ColumnID{0}});
+  keeps_dependency->execute();
+  const auto forwarded = keeps_dependency->get_output()->dependency_validation_api();
+  ASSERT_EQ(forwarded.size(), 1u);
+  EXPECT_EQ(forwarded[0].lhs_columns(), std::vector<ColumnID>{ColumnID{0}});
+  EXPECT_EQ(forwarded[0].rhs_columns(), std::vector<ColumnID>{ColumnID{1}});
+
+  // A read-only projection may remove a dependency column. Such a wrapper has
+  // no complete tuple to stage and therefore carries no descriptor; Delete and
+  // Update are protected because ColumnPruningRule retains all their inputs.
+  const auto prunes_dependency = std::make_shared<GetTable>(
+      "dependency_table", std::vector<ChunkID>{}, std::vector<ColumnID>{ColumnID{1}});
+  prunes_dependency->execute();
+  EXPECT_TRUE(prunes_dependency->get_output()->dependency_validation_api().empty());
+}
+
 TEST_F(OperatorsGetTableTest, PrunedColumnsAndChunks) {
   auto get_table =
       std::make_shared<GetTable>("int_int_float", std::vector{ChunkID{0}, ChunkID{2}}, std::vector{ColumnID{0}});

@@ -20,7 +20,9 @@
 #include "storage/constraints/foreign_key_constraint.hpp"
 #include "storage/constraints/table_key_constraint.hpp"
 #include "storage/constraints/table_order_constraint.hpp"
-#include "storage/index/b_tree/b_tree_olc_index.hpp"
+#include "storage/dependency_validation/dependency_validation_staging.hpp"
+#include "storage/dependency_validation/dependency_validator.hpp"
+#include "storage/dependency_validation/dv_tree.hpp"
 #include "storage/index/chunk_index_statistics.hpp"
 #include "storage/index/partial_hash/partial_hash_index.hpp"
 #include "storage/index/table_index_statistics.hpp"
@@ -32,6 +34,7 @@
 
 namespace hyrise {
 
+class GetTable;
 class TableStatistics;
 
 /**
@@ -41,6 +44,11 @@ class Table : private Noncopyable {
   friend class StorageTableTest;
   friend class UccDiscoveryPlugin;
   friend class StressTest;
+  friend class GetTable;
+  friend void dv_tree::stage_dependency_row(const std::shared_ptr<TransactionContext>& context,
+                                            const std::shared_ptr<const Table>& table,
+                                            const std::shared_ptr<const Chunk>& chunk, ChunkOffset chunk_offset,
+                                            bool is_delete);
 
  public:
   static std::shared_ptr<Table> create_dummy_table(const TableColumnDefinitions& column_definitions);
@@ -200,29 +208,31 @@ class Table : private Noncopyable {
   /** @} */
 
   // ---------------------------------------------------------------------------
-  // Validation dependency: one BTreeOLCIndex that tracks a FD/OD across the
-  // whole table.  Set once by the caller; maintained automatically by the
-  // Insert and Delete operators on every commit.
+  // Validation dependency: one DVTree tracks one FD or OD across the entire
+  // table. The descriptor owns its immutable schema (column IDs and declared
+  // types), while the tree owns only normalized keys and dependency metadata.
+  //
   // ---------------------------------------------------------------------------
-  struct ValidationDependency {
-    std::shared_ptr<BTreeOLCIndex> index;
-    ColumnID lhs_column_id;
-    ColumnID rhs_column_id;
-    std::vector<ColumnID> lhs_column_ids;
-    std::vector<ColumnID> rhs_column_ids;
-    DependencyType dependency_type;
-  };
-
   // Registers a validation dependency (FD or OD) on the given column pair.
   // May be called multiple times to register more than one validator (e.g., FD + OD).
-  void set_dependency_validator(ColumnID lhs_col, ColumnID rhs_col, DependencyType dep_type);
+  void set_dependency_validator(ColumnID lhs_col, ColumnID rhs_col, dv_tree::DependencyKind kind);
   void set_dependency_validator(const std::vector<ColumnID>& lhs_cols, const std::vector<ColumnID>& rhs_cols,
-                                DependencyType dep_type);
-  const std::vector<ValidationDependency>& dependency_validators() const;
+                                dv_tree::DependencyKind kind);
 
-  // Attaches an already-constructed ValidationDependency (e.g., when compacting a table
-  // and reattaching existing DVI index objects to the new table without rebuilding them).
-  void attach_dependency_validator(const ValidationDependency& vd);
+  // Public validation API: read-only, MVCC-snapshot-safe handles over
+  // the registered dependency validators. Each handle forwards only the
+  // snapshot-clamped verdict queries and cannot mutate the tree.
+  std::vector<dv_tree::DependencyValidator> dependency_validation_api() const;
+
+  // Phase 12 bootstrap: registers an FD/OD validator and immediately builds its
+  // DVTree from exactly the rows visible at `build_cid` (standard MVCC snapshot
+  // visibility). Only valid while the table is quiescent (no in-flight writers);
+  // the caller supplies the quiescent build snapshot CID, typically the current
+  // last commit ID. The built tree is queryable through
+  // dependency_validation_api() at snapshots >= build_cid.
+  void build_and_attach_dependency_validator(const std::vector<ColumnID>& lhs_cols,
+                                             const std::vector<ColumnID>& rhs_cols, dv_tree::DependencyKind kind,
+                                             CommitID build_cid);
 
   std::vector<ChunkIndexStatistics> chunk_indexes_statistics() const;
 
@@ -324,10 +334,24 @@ class Table : private Noncopyable {
   std::vector<ChunkIndexStatistics> _chunk_indexes_statistics;
   std::vector<TableIndexStatistics> _table_indexes_statistics;
   pmr_vector<std::shared_ptr<PartialHashIndex>> _table_indexes;
-  std::vector<ValidationDependency> _validation_dependencies;
-
   // For tables with _type==Reference, the row count will not vary. As such, there is no need to iterate over all
   // chunks more than once.
   mutable std::optional<uint64_t> _cached_row_count;
+
+ private:
+  struct ValidationDependency {
+    std::string name;
+    std::vector<ColumnID> lhs_column_ids;
+    std::vector<ColumnID> rhs_column_ids;
+    std::vector<DataType> lhs_column_types;
+    std::vector<DataType> rhs_column_types;
+    dv_tree::DependencyKind kind;
+    std::shared_ptr<dv_tree::DVTree> dv_tree;
+  };
+
+  // Mutable DV trees are never exposed through Table's public API. The
+  // staging function above is the single row-level friend; commit processing
+  // receives trees only through transaction-local write-set bindings.
+  std::vector<ValidationDependency> _validation_dependencies;
 };
 }  // namespace hyrise

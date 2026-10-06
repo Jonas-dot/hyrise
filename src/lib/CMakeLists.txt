@@ -461,6 +461,36 @@ set(
     storage/create_iterable_from_reference_segment.ipp
     storage/create_iterable_from_segment.hpp
     storage/create_iterable_from_segment.ipp
+    storage/dependency_validation/btree/btree_adapter.cpp
+    storage/dependency_validation/btree/btree_adapter.hpp
+    storage/dependency_validation/btree/tum_btree/btree.cpp
+    storage/dependency_validation/btree/tum_btree/btree.hpp
+    storage/dependency_validation/dependency_validation_bootstrap.cpp
+    storage/dependency_validation/dependency_validation_bootstrap.hpp
+    storage/dependency_validation/dependency_validation_test_hooks.cpp
+    storage/dependency_validation/dependency_validation_test_hooks.hpp
+    storage/dependency_validation/dependency_validation_write_set.cpp
+    storage/dependency_validation/dependency_validation_write_set.hpp
+    storage/dependency_validation/dependency_validation_commit_coordinator.cpp
+    storage/dependency_validation/dependency_validation_commit_coordinator.hpp
+    storage/dependency_validation/dependency_validator.cpp
+    storage/dependency_validation/dependency_validator.hpp
+    storage/dependency_validation/dependency_validation_staging.cpp
+    storage/dependency_validation/dependency_validation_staging.hpp
+    storage/dependency_validation/dependency_entry.hpp
+    storage/dependency_validation/dv_types.cpp
+    storage/dependency_validation/dv_types.hpp
+    storage/dependency_validation/dv_tree.cpp
+    storage/dependency_validation/dv_tree.hpp
+    storage/dependency_validation/dv_tree_access.hpp
+    storage/dependency_validation/dv_tree_impl.hpp
+    storage/dependency_validation/hyrise_value_normalization.cpp
+    storage/dependency_validation/hyrise_value_normalization.hpp
+    storage/dependency_validation/key_normalization.cpp
+    storage/dependency_validation/key_normalization.hpp
+    storage/dependency_validation/normalized_key.hpp
+    storage/dependency_validation/rhs_storage.hpp
+    storage/dependency_validation/versioned_history.hpp
     storage/dictionary_segment.cpp
     storage/dictionary_segment.hpp
     storage/dictionary_segment/attribute_vector_iterable.hpp
@@ -680,6 +710,17 @@ set(
     visualization/viz_record_layout.hpp
     ${CMAKE_BINARY_DIR}/version.hpp
 )
+
+# Apple Clang 21 diagnoses ordinary std::mutex acquisition in DVTreeImpl as
+# requiring explicit negative-capability annotations. Hyrise does not annotate
+# its std::mutex members with Clang thread-safety attributes, so suppress this
+# warning only for the translation unit containing those acquisitions.
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES ".*Clang")
+    set_source_files_properties(
+        storage/dependency_validation/dv_tree.cpp
+        PROPERTIES COMPILE_OPTIONS "-Wno-thread-safety-negative"
+    )
+endif()
 
 set(
     LIBRARIES

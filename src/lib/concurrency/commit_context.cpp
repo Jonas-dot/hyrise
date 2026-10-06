@@ -19,8 +19,9 @@ bool CommitContext::is_pending() const {
   return _pending;
 }
 
-void CommitContext::make_pending(const TransactionID transaction_id,
-                                 const std::function<void(TransactionID)>& callback) {
+void CommitContext::make_pending(const TransactionID transaction_id, const std::function<void(TransactionID)>& callback,
+                                 const std::function<void()>& prepublication_callback) {
+  _prepublication_callback = prepublication_callback;
   if (callback) {
     _callback = [callback, transaction_id]() {
       callback(transaction_id);
@@ -30,6 +31,14 @@ void CommitContext::make_pending(const TransactionID transaction_id,
   // This line MUST be AFTER setting the callback. Otherwise we run into a race condition while committing, because this
   // is 'pending' but the callback is not there yet.
   _pending = true;
+}
+
+void CommitContext::fire_prepublication_callback() {
+  std::call_once(_prepublication_once, [&] {
+    if (_prepublication_callback) {
+      _prepublication_callback();
+    }
+  });
 }
 
 void CommitContext::fire_callback() {

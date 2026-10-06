@@ -105,9 +105,9 @@ static const std::string& tname(Mech m) {
   return is_multi(m) ? TABLE_MULTI : TABLE_SINGLE;
 }
 
-static hyrise::DependencyType dep_type(Mech m) {
+static hyrise::dv_tree::DependencyKind dep_type(Mech m) {
   return (m == Mech::OD_SINGLE || m == Mech::OD_MULTI)
-         ? hyrise::DependencyType::OD : hyrise::DependencyType::FD;
+         ? hyrise::dv_tree::DependencyKind::OD : hyrise::dv_tree::DependencyKind::FD;
 }
 
 // Predicate on row_id (ColumnID 0) -- uniquely identifies one row
@@ -270,22 +270,24 @@ static void setup_table(Mech m, int32_t pre_populate, int32_t num_unique_lhs) {
     if (!chunk) continue;
     auto mvcc = chunk->mvcc_data();
     for (auto off = hyrise::ChunkOffset{0}; off < chunk->size(); ++off) {
-      mvcc->set_begin_cid(off, hyrise::CommitID{0});
+      mvcc->set_begin_cid(off, hyrise::INITIAL_COMMIT_ID);
       mvcc->set_tid(off, hyrise::TransactionID{0});
     }
-    mvcc->max_begin_cid.store(hyrise::CommitID{0});
+    mvcc->max_begin_cid.store(hyrise::INITIAL_COMMIT_ID);
   }
 
   if (m != Mech::OFF) {
     const auto d = dep_type(m);
     if (multi) {
       // DVI columns: lhs1=col1, lhs2=col2 -> rhs1=col3, rhs2=col4
-      table->set_dependency_validator(
+      table->build_and_attach_dependency_validator(
           std::vector<hyrise::ColumnID>{hyrise::ColumnID{1}, hyrise::ColumnID{2}},
-          std::vector<hyrise::ColumnID>{hyrise::ColumnID{3}, hyrise::ColumnID{4}}, d);
+          std::vector<hyrise::ColumnID>{hyrise::ColumnID{3}, hyrise::ColumnID{4}}, d,
+          hyrise::INITIAL_COMMIT_ID);
     } else {
       // DVI columns: lhs=col1 -> rhs=col2
-      table->set_dependency_validator(hyrise::ColumnID{1}, hyrise::ColumnID{2}, d);
+      table->build_and_attach_dependency_validator({hyrise::ColumnID{1}}, {hyrise::ColumnID{2}}, d,
+                                                   hyrise::INITIAL_COMMIT_ID);
     }
   }
 

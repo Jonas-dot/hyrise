@@ -25,6 +25,7 @@
 #include "storage/constraints/foreign_key_constraint.hpp"
 #include "storage/constraints/table_key_constraint.hpp"
 #include "storage/constraints/table_order_constraint.hpp"
+#include "storage/dependency_validation/dependency_validation_bootstrap.hpp"
 #include "storage/index/adaptive_radix_tree/adaptive_radix_tree_index.hpp"  // IWYU pragma: keep
 #include "storage/index/chunk_index_statistics.hpp"
 #include "storage/index/group_key/composite_group_key_index.hpp"  // IWYU pragma: keep
@@ -38,7 +39,6 @@
 #include "types.hpp"
 #include "utils/assert.hpp"
 #include "utils/performance_warning.hpp"
-#include "value_segment.hpp"
 
 namespace {
 
@@ -57,6 +57,39 @@ bool columns_intersect(const std::set<ColumnID>& lhs, const std::set<ColumnID>& 
   return std::ranges::any_of(lhs, [&](const auto column_id) {
     return rhs.contains(column_id);
   });
+}
+
+bool is_supported_dependency_data_type(const DataType data_type) {
+  switch (data_type) {
+    case DataType::Int:
+    case DataType::Long:
+    case DataType::Float:
+    case DataType::Double:
+    case DataType::String:
+      return true;
+    case DataType::Null:
+      return false;
+  }
+  Fail("Unknown data type.");
+}
+
+std::string dependency_name(const std::vector<ColumnID>& lhs_columns, const std::vector<ColumnID>& rhs_columns,
+                            const dv_tree::DependencyKind kind) {
+  auto result = std::string{kind == dv_tree::DependencyKind::FD ? "FD " : "OD "};
+  result += "[";
+  for (auto index = std::size_t{0}; index < lhs_columns.size(); ++index) {
+    if (index > 0)
+      result += ",";
+    result += std::to_string(static_cast<ColumnID::base_type>(lhs_columns[index]));
+  }
+  result += "] -> [";
+  for (auto index = std::size_t{0}; index < rhs_columns.size(); ++index) {
+    if (index > 0)
+      result += ",";
+    result += std::to_string(static_cast<ColumnID::base_type>(rhs_columns[index]));
+  }
+  result += "]";
+  return result;
 }
 
 }  // namespace
@@ -413,12 +446,16 @@ void Table::set_table_statistics(const std::shared_ptr<TableStatistics>& table_s
   _table_statistics = table_statistics;
 }
 
-void Table::set_dependency_validator(const ColumnID lhs_col, const ColumnID rhs_col, const DependencyType dep_type) {
-  set_dependency_validator(std::vector<ColumnID>{lhs_col}, std::vector<ColumnID>{rhs_col}, dep_type);
+void Table::set_dependency_validator(const ColumnID lhs_col, const ColumnID rhs_col,
+                                     const dv_tree::DependencyKind kind) {
+  set_dependency_validator(std::vector<ColumnID>{lhs_col}, std::vector<ColumnID>{rhs_col}, kind);
 }
 
 void Table::set_dependency_validator(const std::vector<ColumnID>& lhs_cols, const std::vector<ColumnID>& rhs_cols,
-                                     const DependencyType dep_type) {
+                                     const dv_tree::DependencyKind kind) {
+  Assert(empty(),
+         "Attaching an empty dependency validator is only valid for an empty table; use "
+         "build_and_attach_dependency_validator() for pre-existing rows.");
   Assert(!lhs_cols.empty(), "lhs_cols must not be empty");
   Assert(!rhs_cols.empty(), "rhs_cols must not be empty");
   for (const auto lhs_col : lhs_cols) {
@@ -428,25 +465,104 @@ void Table::set_dependency_validator(const std::vector<ColumnID>& lhs_cols, cons
     Assert(rhs_col < column_count(), "rhs_col out of range");
   }
 
-  // Build a tiny dummy segment just to satisfy the BTreeOLCIndex constructor; the index itself is used exclusively for
-  // validation (insert_entry_for_validation / delete_entry_for_validation), not for lookup.
-  auto dummy_segment = std::make_shared<ValueSegment<int32_t>>();
+  const auto lhs_types = [&] {
+    auto types = std::vector<DataType>{};
+    types.reserve(lhs_cols.size());
+    for (const auto column_id : lhs_cols) {
+      const auto type = column_data_type(column_id);
+      Assert(is_supported_dependency_data_type(type), "Unsupported LHS data type for dependency validation.");
+      types.emplace_back(type);
+    }
+    return types;
+  }();
+  const auto rhs_types = [&] {
+    auto types = std::vector<DataType>{};
+    types.reserve(rhs_cols.size());
+    for (const auto column_id : rhs_cols) {
+      const auto type = column_data_type(column_id);
+      Assert(is_supported_dependency_data_type(type), "Unsupported RHS data type for dependency validation.");
+      types.emplace_back(type);
+    }
+    return types;
+  }();
+
+  const auto duplicate_dependency = std::ranges::any_of(_validation_dependencies, [&](const auto& dependency) {
+    return dependency.kind == kind && dependency.lhs_column_ids == lhs_cols && dependency.rhs_column_ids == rhs_cols;
+  });
+  Assert(!duplicate_dependency, "An identical dependency validator is already registered for this table.");
+
   _validation_dependencies.push_back(ValidationDependency{
-      .index = std::make_shared<BTreeOLCIndex>(std::vector<std::shared_ptr<const AbstractSegment>>{dummy_segment}),
-      .lhs_column_id = lhs_cols.front(),
-      .rhs_column_id = rhs_cols.front(),
+      .name = dependency_name(lhs_cols, rhs_cols, kind),
       .lhs_column_ids = lhs_cols,
       .rhs_column_ids = rhs_cols,
-      .dependency_type = dep_type,
+      .lhs_column_types = lhs_types,
+      .rhs_column_types = rhs_types,
+      .kind = kind,
+      .dv_tree = std::make_shared<dv_tree::DVTree>(kind),
   });
 }
 
-const std::vector<Table::ValidationDependency>& Table::dependency_validators() const {
-  return _validation_dependencies;
+std::vector<dv_tree::DependencyValidator> Table::dependency_validation_api() const {
+  auto validators = std::vector<dv_tree::DependencyValidator>{};
+  validators.reserve(_validation_dependencies.size());
+  for (const auto& dependency : _validation_dependencies) {
+    // The shared_ptr<DVTree> converts to shared_ptr<const DVTree>, which is what
+    // makes the resulting handle read-only and snapshot-safe.
+    validators.emplace_back(dependency.name, dependency.kind, dependency.lhs_column_ids, dependency.rhs_column_ids,
+                            dependency.dv_tree);
+  }
+  return validators;
 }
 
-void Table::attach_dependency_validator(const ValidationDependency& vd) {
-  _validation_dependencies.push_back(vd);
+void Table::build_and_attach_dependency_validator(const std::vector<ColumnID>& lhs_cols,
+                                                  const std::vector<ColumnID>& rhs_cols,
+                                                  const dv_tree::DependencyKind kind, const CommitID build_cid) {
+  Assert(!lhs_cols.empty(), "lhs_cols must not be empty");
+  Assert(!rhs_cols.empty(), "rhs_cols must not be empty");
+
+  auto lhs_types = std::vector<DataType>{};
+  lhs_types.reserve(lhs_cols.size());
+  for (const auto column_id : lhs_cols) {
+    Assert(column_id < column_count(), "lhs_col out of range");
+    const auto type = column_data_type(column_id);
+    Assert(is_supported_dependency_data_type(type), "Unsupported LHS data type for dependency validation.");
+    lhs_types.emplace_back(type);
+  }
+
+  auto rhs_types = std::vector<DataType>{};
+  rhs_types.reserve(rhs_cols.size());
+  for (const auto column_id : rhs_cols) {
+    Assert(column_id < column_count(), "rhs_col out of range");
+    const auto type = column_data_type(column_id);
+    Assert(is_supported_dependency_data_type(type), "Unsupported RHS data type for dependency validation.");
+    rhs_types.emplace_back(type);
+  }
+
+  const auto duplicate_dependency = std::ranges::any_of(_validation_dependencies, [&](const auto& dependency) {
+    return dependency.kind == kind && dependency.lhs_column_ids == lhs_cols && dependency.rhs_column_ids == rhs_cols;
+  });
+  Assert(!duplicate_dependency, "An identical dependency validator is already registered for this table.");
+
+  const auto spec = dv_tree::DependencySpec{
+      .kind = kind,
+      .lhs_column_ids = lhs_cols,
+      .rhs_column_ids = rhs_cols,
+      .lhs_column_types = lhs_types,
+      .rhs_column_types = rhs_types,
+  };
+  auto tree = dv_tree::build_dependency_validator(*this, spec, build_cid);
+
+  // Publish the descriptor only after the private build and oracle check have
+  // succeeded. Any exception above leaves the table completely unchanged.
+  _validation_dependencies.push_back(ValidationDependency{
+      .name = dependency_name(lhs_cols, rhs_cols, kind),
+      .lhs_column_ids = lhs_cols,
+      .rhs_column_ids = rhs_cols,
+      .lhs_column_types = std::move(lhs_types),
+      .rhs_column_types = std::move(rhs_types),
+      .kind = kind,
+      .dv_tree = std::move(tree),
+  });
 }
 
 std::vector<ChunkIndexStatistics> Table::chunk_indexes_statistics() const {

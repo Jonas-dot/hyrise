@@ -42,6 +42,12 @@ namespace hyrise {
 class CommitContext;
 class TransactionContext;
 
+namespace dv_tree {
+class DependencyValidationCommit;
+class DependencyValidationCommitCoordinator;
+class DependencyValidationWriteSet;
+}  // namespace dv_tree
+
 /**
  * The TransactionManager is responsible for a consistent assignment of
  * transaction and commit ids. It also keeps track of the last commit id
@@ -78,6 +84,10 @@ class TransactionManager : public Noncopyable {
 
   std::shared_ptr<CommitContext> _new_commit_context();
   void _try_increment_last_commit_id(const std::shared_ptr<CommitContext>& context);
+  std::unique_ptr<dv_tree::DependencyValidationCommit> _register_dependency_validation_commit(
+      CommitID commit_id, const dv_tree::DependencyValidationWriteSet* write_set);
+  void _refresh_dependency_validation_snapshot_horizon();
+  void _refresh_dependency_validation_snapshot_horizon_locked();
 
   /**
    * The TransactionManager keeps track of issued snapshot-commit-ids,
@@ -95,6 +105,8 @@ class TransactionManager : public Noncopyable {
   std::atomic<CommitID> _last_commit_id;
 
   std::shared_ptr<CommitContext> _last_commit_context;
+  std::unique_ptr<dv_tree::DependencyValidationCommitCoordinator> _dependency_validation_commit_coordinator;
+  std::mutex _commit_context_creation_mutex;
 
   mutable std::mutex _active_snapshot_commit_ids_mutex;
   std::unordered_multiset<CommitID> _active_snapshot_commit_ids;

@@ -331,8 +331,40 @@ std::shared_ptr<const Table> GetTable::_on_execute() {
   const auto [remove_begin, remove_end] = std::ranges::remove_if(table_indexes, all_indexed_segments_pruned);
   table_indexes.erase(remove_begin, remove_end);
 
-  return std::make_shared<Table>(pruned_column_definitions, TableType::Data, std::move(output_chunks),
-                                 stored_table->uses_mvcc(), table_indexes);
+  auto output_table = std::make_shared<Table>(pruned_column_definitions, TableType::Data, std::move(output_chunks),
+                                              stored_table->uses_mvcc(), table_indexes);
+
+  // Delete and Update stage old dependency values through this lightweight
+  // data-table wrapper. Forward only the private descriptors (the DVTree
+  // shared_ptr remains the dependency identity); the public Table API still
+  // exposes read-only DependencyValidator handles exclusively.
+  for (const auto& stored_dependency : stored_table->_validation_dependencies) {
+    const auto dependency_column_was_pruned = [&](const auto& column_ids) {
+      return std::ranges::any_of(column_ids, [&](const auto column_id) {
+        return std::ranges::binary_search(_pruned_column_ids, column_id);
+      });
+    };
+    // Read-only plans may prune arbitrary columns and never stage DML. Delete
+    // and Update explicitly require all input columns in ColumnPruningRule, so
+    // every dependency descriptor is preserved on their GetTable wrappers.
+    if (dependency_column_was_pruned(stored_dependency.lhs_column_ids) ||
+        dependency_column_was_pruned(stored_dependency.rhs_column_ids)) {
+      continue;
+    }
+
+    auto output_dependency = stored_dependency;
+    const auto remap_column = [&](const ColumnID stored_column_id) {
+      const auto pruned_before = std::ranges::lower_bound(_pruned_column_ids, stored_column_id);
+      return ColumnID{static_cast<ColumnID::base_type>(
+          static_cast<ColumnID::base_type>(stored_column_id) -
+          static_cast<ColumnID::base_type>(std::distance(_pruned_column_ids.begin(), pruned_before)))};
+    };
+    std::ranges::transform(stored_dependency.lhs_column_ids, output_dependency.lhs_column_ids.begin(), remap_column);
+    std::ranges::transform(stored_dependency.rhs_column_ids, output_dependency.rhs_column_ids.begin(), remap_column);
+    output_table->_validation_dependencies.emplace_back(std::move(output_dependency));
+  }
+
+  return output_table;
 }
 
 std::set<ChunkID> GetTable::_prune_chunks_dynamically() {
